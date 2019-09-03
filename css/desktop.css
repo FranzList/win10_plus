@@ -1,0 +1,76 @@
+#root{
+   display: flex;
+   width: 100vw;
+   height: 100vh;  
+   flex-direction: column;
+}
+
+#desktop{
+   flex: 1;
+   position: relative;
+}
+#desktop .bg-img{
+   display: flex;
+   flex-direction: column;
+   flex-wrap: wrap;
+   padding: 20px;
+   position: absolute;
+   top: 0;
+   left: 0;
+   height: 100%;
+   width: 100%;
+   
+
+}
+   .de-icon{
+      text-align: center;
+      position: relative;
+      height: 80px;
+      width: 80px;
+   }
+   .DesktopIconImgBox img{
+      width: 50px;
+      height: 50px;
+   }
+   .de-text-box>input{
+      display: none;
+      border: none;
+      outline: none;
+      width: 100%;
+      height: 1em;
+      line-height: 1em;
+      font-size: 13px;
+   }
+   .de-text-box>span{
+      color: white;
+      font-size: 13px;
+   }
+/* 任务栏 */
+#footer{
+   position: relative;
+   flex: 0;
+   background: rgb(7, 13, 19)
+}
+/* 右键菜单 */
+.contextMenu{
+   opacity: 0;
+   position: absolute;
+   background: white;
+   transition: opacity 0.2s ease;
+}
+.contextMenu>ul{
+   padding-top: 5px;
+   list-style: none;
+}
+.contextMenu li{
+   cursor: default;
+   padding: 5px 0px 5px 30px;
+   line-height: 1.5em;
+   font-size: 15px;
+}
+.contextMenu li:hover{
+   background: lightgray;
+}
+.show{
+   opacity: 1 !important;
+}

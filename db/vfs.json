@@ -1,0 +1,567 @@
+
+{
+   "child": [
+  		{
+			"name":"我的电脑",
+			"id":"qcqXWjbeQUPZtxfeI5rN6yWsIQbzYRXo",
+			"description":"Here for my resumes",
+			"icon":"folder",
+			"readonly":false,
+			"ondesktop":true,
+			"onstartmenu":true,
+			"createtime":1503812702,
+			"lastmodify":1503812702,
+			"type":"dir",
+			"child":[
+                {
+				   "name":"Resume",
+				   "id":"90FmXHkSWNdiHY96AQkQTscNvxm3PPlC",
+				   "description":"This is my resume in pdf format (english version)",
+				   "icon":"pdf",
+				   "type":"url",
+				   "createtime":1503812702,
+				   "lastmodify":1503812702,
+				   "readonly":true,
+				   "onstartmenu":true,
+				   "url":"./resume/varga_zsolt_cv_en_europass.pdf"
+                },
+				{
+				   "name":"Curriculum vitae",
+				   "id":"90FmXHkSWNdiHY96AQkQTscNvxm3PPl1",
+				   "description":"CV -ul meu (pdf)",
+				   "icon":"pdf",
+				   "type":"url",
+				   "createtime":1503812702,
+				   "lastmodify":1503812702,
+				   "readonly":true,
+				   "onstartmenu":true,
+				   "url":"./resume/varga_zsolt_cv_ro_europass.pdf"
+                },
+				{
+				   "name":"Önéletrajz",
+				   "id":"90FmXHkSWNdiHY96AQkQTscNvxm3PPl2",
+				   "description":"Az önéletrajz (pdf)",
+				   "icon":"pdf",
+				   "type":"url",
+				   "createtime":1503812702,
+				   "lastmodify":1503812702,
+				   "readonly":true,
+				   "onstartmenu":true,
+				   "url":"./resume/varga_zsolt_cv_hu_europass.pdf"
+				}
+			]
+		},
+	    {
+			"name":"回收站",
+			"id":"zxwLNUWqJS3QTJCmviKhcvvXm1ACdYkU",
+			"description":"What i want in future? Check this folder!",
+			"icon":"racycle",
+			"readonly":false,
+			"ondesktop":true,
+			"onstartmenu":true,
+			"createtime":1503812702,
+			"lastmodify":1503812702,
+			"type":"dir",
+			"child":[
+				{
+				   "name":"My goal!",
+				   "id":"89JB9rvtWMy9xep6teDWsuv1fiwL7AOs",
+				   "description":"I want to be... a... What?",
+				   "icon":"file",
+				   "type":"html",
+				   "createtime":1503812702,
+				   "lastmodify":1503812702,
+				   "readonly":false,
+				   "ondesktop":true,
+				   "onstartmenu":false,
+				   "url":"plans.html"
+				}
+		   ]
+       },
+       {
+			"name":"Hobbies",
+			"id":"SnJhxrRvZVjcLT4FzJlCCq2jbnKoGfs8",
+			"description":"Here is my hobby list",
+			"icon":"folder",
+			"readonly":false,
+			"ondesktop":false,
+			"onstartmenu":true,
+			"createtime":1503812702,
+			"lastmodify":1503812702,
+			"type":"dir",
+			"child":[
+				{
+				   "name":"Favorite OS",
+				   "id":"yqtPmpMzpVY7WrX54KzrKy60Qi6vRDcL",
+				   "description":"I love the linux, do you want knwo why?",
+				   "icon":"file",
+				   "type":"html",
+				   "createtime":1503812702,
+				   "lastmodify":1503812702,
+				   "readonly":false,
+				   "onstartmenu":true,
+				   "url":"favorite_os.html"
+				},
+				{
+				   "name":"Free time",
+				   "id":"J9x2i18HF6n4UTFcN5Wvu3Ttjd27ji0B",
+				   "description":"Many thing what i do",
+				   "icon":"file",
+				   "type":"html",
+				   "createtime":1503812702,
+				   "lastmodify":1503812702,
+				   "readonly":false,
+				   "onstartmenu":true,
+				   "url":"free_time.html"
+				}
+			]
+	   },
+	   {
+			"name":"Contact",
+			"id":"3mB8bCjSMyHr9KkeU6vr0jvIQEx1papy",
+			"description":"Do you want contact with me?",
+			"icon":"folder",
+			"readonly":false,
+			"ondesktop":true,
+			"onstartmenu":true,
+			"createtime":1503812702,
+			"lastmodify":1503812702,
+			"type":"dir",
+			"child":[
+				{
+					"name":"Email",
+					"id":"B7fZo2KXzYdcM251wvalziYGXoBdf3lE",
+					"description":"Click here for my email address!",
+					"icon":"outlook",
+					"type":"alert",
+					"createtime":1503812702,
+					"lastmodify":1503812702,
+					"readonly":false,
+					"onstartmenu":true,
+					"text": "Hello, my mail address is: shadowvzs@hotmail.com"
+				},
+				{
+					"name":"LinkedIn",
+					"id":"pOcvgP2ROz7cOZ3tUNhfheR3dbgFtr7f",
+					"description":"Click here for my LinkedIn",
+					"icon":"linkedin",
+					"type":"url",
+					"createtime":1503812702,
+					"lastmodify":1503812702,
+					"readonly":false,
+					"onstartmenu":true,
+					"url": "https://www.linkedin.com/in/varga-zsolt-5b4b15149/"
+				},
+				{
+					"name":"Facebook",
+					"id":"1FvUXedLe4qUhIHn54UBK6TRPGMGwJg1",
+					"description":"Click here if you want contact in Facebook",
+					"icon":"facebook",
+					"type":"url",
+					"createtime":1503812702,
+					"lastmodify":1503812702,
+					"readonly":false,
+					"onstartmenu":true,
+					"url": "https://www.facebook.com/shadowvzs"
+
+				},
+				{
+					"name":"Git Hub",
+					"id":"atxc8l5k1ycugWFGgbKVFveWdn5fpIFQ",
+					"description":"Click here if you want check my Git repo",
+					"icon":"git",
+					"type":"url",
+					"createtime":1503812702,
+					"lastmodify":1503812702,
+					"readonly":false,
+					"onstartmenu":true,
+					"url": "https://github.com/shadowvzs"
+				},
+				{
+					"name":"Skype",
+					"id":"QV6iMZTZenxrSx9jcShXAtYK7pCCokjm",
+					"description":"Click here if you want write on Skype",
+					"icon":"skype",
+					"type":"alert",
+					"createtime":1503812702,
+					"lastmodify":1503812702,
+					"readonly":false,
+					"onstartmenu":true,
+					"text": "Hello, my mail address on Skype is: shadowvzs@hotmail.com"
+				}
+			]
+		},
+
+
+        {
+            "name":"My Projects",
+            "id":"zffNce2tJprbnelmwtx8xBymNsyCY5LK",
+            "description":"I stored here my references",
+            "icon":"folder",
+            "readonly":false,
+            "ondesktop":true,
+            "onstartmenu":false,
+            "createtime":1503812702,
+            "lastmodify":1503812702,
+            "type":"dir",
+            "child":[
+                {
+                   "name":"All - Overview",
+                   "id":"xmJevvUwmqqE0fSJt3Q5MIOe6fHB63j9",
+                   "description":"Every references collected into this page",
+                   "icon":"doc",
+                   "type":"html",
+                   "createtime":1503812702,
+                   "lastmodify":1503812702,
+                   "readonly":false,
+                   "onstartmenu":true,
+                   "url":"projects.html"
+                },
+                {
+                   "name":"SPA",
+                   "id":"J2Y3DxJLuFNNBvfhDkeKMZ8CWYInugb2",
+                   "description":"PHP 7+, CSS3, ES 6, MySQL, Ajax + JSON",
+                   "icon":"doc",
+                   "type":"html",
+                   "createtime":1503812702,
+                   "lastmodify":1503812702,
+                   "readonly":false,
+                   "onstartmenu":true,
+                   "url":"gyozelem.html"
+                },
+                {
+                   "name":"VirtualOS",
+                   "id":"yx1vvNy5Y6EbUiai1Q566yWihRxaU4yk",
+                   "description":"VirtualOS log :)",
+                   "icon":"file",
+                   "type":"html",
+                   "createtime":1503812702,
+                   "lastmodify":1503812702,
+                   "readonly":false,
+                   "ondesktop":false,
+                   "onstartmenu":true,
+                   "url":"pagelog.html"
+                },
+                {
+                   "name":"pwAdmin",
+                   "id":"JAY4DxJLuFNNBvfhDkeKMZ8CWYInugb2",
+                   "description":"PHP (5.3+), CSS, Javascript, MySQL, Ajax + JSON",
+                   "icon":"doc",
+                   "type":"html",
+                   "createtime":1503812702,
+                   "lastmodify":1503812702,
+                   "readonly":false,
+                   "onstartmenu":true,
+                   "url":"pwadmin.html"
+                }
+            ]
+        },
+        {
+			"name":"Terminal Guides",
+			"id":"BadBmHrbSujgTAqHEJXy87BtCCzvNXL1",
+			"description":"Guide collection",
+			"icon":"folder",
+			"readonly":false,
+			"ondesktop":true,
+			"onstartmenu":false,
+			"createtime":1503812702,
+			"lastmodify":1503812702,
+			"type":"dir",
+			"child":[
+                {
+					"name":"Ubuntu",
+					"id":"swad9vf5oYMy3wEh7XISpQI76SvLT4lS",
+					"description":"Guide collection",
+					"icon":"folder",
+					"readonly":false,
+					"onstartmenu":true,
+					"createtime":1503812702,
+					"lastmodify":1503812702,
+					"type":"dir",
+					"child":[
+						{
+						   "name":"Ubuntu: File System",
+						   "id":"GwmTQgRRKMfFtuIY3zwOKp6n0Cf9ti7L",
+						   "description":"Several usefull command",
+						   "icon":"shell",
+						   "type":"shell",
+						   "createtime":1503812702,
+						   "lastmodify":1503812702,
+						   "readonly":false,
+						   "url":"ubuntu_1_filesystem.sh"
+						},
+						{
+						   "name":"Ubuntu: Advanced",
+						   "id":"Ijkzy3ftVMFyQesxHLgJ89NevCNly7Xp",
+						   "description":"Several usefull command",
+						   "icon":"shell",
+						   "type":"shell",
+						   "createtime":1503812702,
+						   "lastmodify":1503812702,
+						   "readonly":false,
+						   "url":"ubuntu_2_advanced.sh"
+						}
+					]
+				},
+                {
+					"name":"Docker",
+					"id":"fL3Gt20lfXvFGXFPLTbWGtsLYLzaNpb0",
+					"description":"Guide collection",
+					"icon":"folder",
+					"readonly":false,
+					"onstartmenu":true,
+					"createtime":1503812702,
+					"lastmodify":1503812702,
+					"type":"dir",
+					"child":[
+						{
+						   "name":"Docker: Basics",
+						   "id":"6KN00un5agjllvOya2hRAlfEBRt0rjKw",
+						   "description":"Basics, how to start the git",
+						   "icon":"shell",
+						   "type":"shell",
+						   "createtime":1503812702,
+						   "lastmodify":1503812702,
+						   "readonly":false,
+						   "url":"docker_1_basics.sh"
+						}
+                    ]
+                },
+                {
+					"name":"Git",
+					"id":"fL3Gt80lfXvFGXFPLTbWGtsLYLzaNpb0",
+					"description":"Guide collection",
+					"icon":"folder",
+					"readonly":false,
+					"onstartmenu":true,
+					"createtime":1503812702,
+					"lastmodify":1503812702,
+					"type":"dir",
+					"child":[
+						{
+						   "name":"Git: Start",
+						   "id":"6KN00un5agjllvOya2hRAlfEBRt0rjKw",
+						   "description":"Basics, how to start the git",
+						   "icon":"shell",
+						   "type":"shell",
+						   "createtime":1503812702,
+						   "lastmodify":1503812702,
+						   "readonly":false,
+						   "url":"git_1_basics.sh"
+						},
+						{
+						   "name":"Git: List & Log",
+						   "id":"sWOwtQtZ2FJWQUf4ocJd9jnJ3YjIqzah",
+						   "description":"Basics, how to list or show stuffs",
+						   "icon":"shell",
+						   "type":"shell",
+						   "createtime":1503812702,
+						   "lastmodify":1503812702,
+						   "readonly":false,
+						   "url":"git_2_list_log.sh"
+						},
+						{
+						   "name":"Git: Up & Down",
+						   "id":"zbrNUcSbY7Tmht0H4TAhVInld17Zgsym",
+						   "description":"Basics, how to pull, push, clone, delete",
+						   "icon":"shell",
+						   "type":"shell",
+						   "createtime":1503812702,
+						   "lastmodify":1503812702,
+						   "readonly":false,
+						   "url":"git_3_get_put.sh"
+						},
+						{
+						   "name":"Git: Branch",
+						   "id":"xhOJOarb2C10m6PSU9dcU3Kouuyt39gb",
+						   "description":"Basics, how to use branches",
+						   "icon":"shell",
+						   "type":"shell",
+						   "createtime":1503812702,
+						   "lastmodify":1503812702,
+						   "readonly":false,
+						   "url":"git_4_branch.sh"
+						},
+						{
+						   "name":"Git: Tag",
+						   "id":"pu66g10aHQuX2H1Z8X3oihFbO3DWhK25",
+						   "description":"Basics, how to use tags",
+						   "icon":"shell",
+						   "type":"shell",
+						   "createtime":1503812702,
+						   "lastmodify":1503812702,
+						   "readonly":false,
+						   "url":"git_5_tag.sh"
+						}
+					]
+				}
+			]
+        },
+		{
+			"name":"Tutorials & Links",
+			"id":"BtdBmHrbSujgTAqHEJXy87BtCCzvNXL1",
+			"description":"Guide collection",
+			"icon":"folder",
+			"readonly":false,
+			"ondesktop":true,
+			"onstartmenu":false,
+			"createtime":1503812702,
+			"lastmodify":1503812702,
+			"type":"dir",
+			"child":[
+                {
+                    "name":"LAMP",
+                    "id":"Z401HcNaYnlBEng0LJ2Z9MkpsCdlV4i1",
+                    "description":"Few tip and note for lamp",
+                    "icon":"folder",
+                    "readonly":false,
+                    "onstartmenu":true,
+                    "createtime":1503812702,
+                    "lastmodify":1503812702,
+                    "type":"dir",
+                    "child":[
+                        {
+                           "name":".htaccess & speed",
+                           "id":"nz190I212C5Ea8cY2OTSrH4af1xmDukh",
+                           "description":"How to improve the page loading speed with .htaccess or make url rewrite for single page app",
+                           "icon":"file",
+                           "type":"html",
+                           "createtime":1503812702,
+                           "lastmodify":1503812702,
+                           "readonly":false,
+                           "onstartmenu":true,
+                           "url":"htaccess_optimization.html"
+                        }
+                    ]
+                },
+                {
+                    "name":"Tools",
+                    "id":"Z401HcNaYnlBEjg0LJ2Z9MkpsCdlV4iq",
+                    "description":"Optimizations, tweaks and tools for web development",
+                    "icon":"folder",
+                    "readonly":false,
+                    "onstartmenu":true,
+                    "createtime":1503812702,
+                    "lastmodify":1503812702,
+                    "type":"dir",
+                    "child":[
+                        {
+                           "name":"Online tools",
+                           "id":"nz190I24mC5Ea8cYAOTSrH4af1xmDukh",
+                           "description":"Online tools like minifier, beautifier, editors, converters and so many else",
+                           "icon":"file",
+                           "type":"html",
+                           "createtime":1503812702,
+                           "lastmodify":1503812702,
+                           "readonly":false,
+                           "onstartmenu":true,
+                           "url":"online_tools.html"
+                        }
+                    ]
+                },
+                {
+					"name":"PHP",
+					"id":"Z40DHcNmYnlBEjg0LJ2Z9MkpsCdlV4iq",
+					"description":"My php collection",
+					"icon":"folder",
+					"readonly":false,
+					"onstartmenu":true,
+					"createtime":1503812702,
+					"lastmodify":1503812702,
+					"type":"dir",
+					"child":[
+						{
+						   "name":"CURL & Mailerlite",
+						   "id":"nzIP0I24mC5Ea8cYAOTSrH4af1xmDukh",
+						   "description":"CURL  put, post, get, delete with mailerlite groups",
+						   "icon":"file",
+						   "type":"html",
+						   "createtime":1503812702,
+						   "lastmodify":1503812702,
+						   "readonly":false,
+						   "onstartmenu":true,
+						   "url":"php_1_curl.html"
+						}
+					]
+				},
+				{
+					"name":"CSS3",
+					"id":"BTXSoZc9yltdDZmGXEjJRjBlCREUTaDA",
+					"description":"My CSS collection",
+					"icon":"folder",
+					"readonly":false,
+					"onstartmenu":true,
+					"createtime":1503812702,
+					"lastmodify":1503812702,
+					"type":"dir",
+					"child":[
+						{
+						   "name":"Helpful links",
+						   "id":"rTlUxcpPwcMccdxMAtwiBackgOPMF2gp",
+						   "description":"CSS shapes, pseudo element etc",
+						   "icon":"file",
+						   "type":"html",
+						   "createtime":1503812702,
+						   "lastmodify":1503812702,
+						   "readonly":false,
+						   "onstartmenu":true,
+						   "url":"css.html"
+						}
+					]
+				},
+				{
+					"name":"JS",
+					"id":"dhX9PZd9PKxp1T9gexaCUcdPR4hHDbV5",
+					"description":"My javascript collection",
+					"icon":"folder",
+					"readonly":false,
+					"onstartmenu":true,
+					"createtime":1503812702,
+					"lastmodify":1503812702,
+					"type":"dir",
+					"child":[
+						{
+						   "name":"Few links",
+						   "id":"R7p2kJZs2cmOm8XGVmvcQ0Gm5szQGT3T",
+						   "description":"Usefull functions",
+						   "icon":"file",
+						   "type":"html",
+						   "createtime":1503812702,
+						   "lastmodify":1503812702,
+						   "readonly":false,
+						   "onstartmenu":true,
+						   "url":"javascript.html"
+						}
+					]
+				}
+			]
+		},
+        {
+            "name":"Changelog",
+            "id":"dhX9PZd9PKxp1T9gexaCUcdPR4cHDbV5",
+            "description":"My javascript collection",
+            "icon":"folder",
+            "readonly":false,
+            "onstartmenu":true,
+            "createtime":1503812702,
+            "lastmodify":1503812702,
+            "type":"dir",
+            "child":[
+                {
+                   "name":"Every changes",
+                   "id":"YxQvvNy5Y6EbUiai1Q566yWihRxaU4yk",
+                   "description":"Changes on page was loged here",
+                   "icon":"file",
+                   "type":"html",
+                   "createtime":1503812702,
+                   "lastmodify":1503812702,
+                   "readonly":false,
+                   "ondesktop":false,
+                   "onstartmenu":true,
+                   "url":"pagelog.html"
+                }
+            ]
+        }
+		
+	]
+}

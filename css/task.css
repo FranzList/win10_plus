@@ -1,0 +1,23 @@
+.task-container{
+    position: relative;
+    height: 40px;
+}
+  .start-menu{
+      width: 40px;
+      height: 40px;
+      padding: 10px;
+      opacity: 1;
+  }
+    .start-menu>div{
+        height: 100%;
+        background: url(../assets/task/windows.png);
+        background-position: center center;
+        background-size: 100% 100%;
+    }
+    .start-menu>div:hover{
+        background:url(../assets/task/windows-hover.png);
+        background-position: center center;
+        background-size: 100% 100%;
+    }
+  
+
