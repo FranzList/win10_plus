@@ -28,7 +28,7 @@ const componentsData = {
             relationship: {
                 datasource: 'fileSystem',
                 menu: 'contextMenu',
-                display: 'displayManager',
+                display: 'display',
                 clipboard: 'virtualClipboard',
                 explorer: 'fileExplorer',
                 window: 'windowManager',
@@ -68,6 +68,15 @@ const componentsData = {
 
         }
     },
+    // `<div class="desktop-details">
+    //                         <h1>背景</h1>
+    //                         <div class="desktop-previews"></div>
+    //                         <h3>选择图片</h3>
+    //                         <div class="img-container">
+    //                             <img><img/>
+    //                         </div>
+    //                         <button>浏览</button>                                                        
+    //                     </div>`;   
     //相关函数
     methods: {
         display(settings, shared = false) {
@@ -75,7 +84,24 @@ const componentsData = {
                 {window} = settings.relationship,
                 cName = settings.constructorName,
                 bgImg = document.querySelector('.bg-img');
-            templete = {
+                template = {
+                    window() {
+                        const s = screen,
+                            b = document.body,
+                            d = document.querySelector('.desktop-container'),
+                            c = configs;
+                        return `<div class="desktop-details">
+                                    <h1>背景</h1>
+                                    <div class="desktop-previews">
+                                      <div class="mini-previews"></div>
+                                    </div>
+                                    <p>选择图片</p>
+                                    <div class="img-container">
+                                    <img><img/>
+                                    </div>
+                                    <button>浏览</button>                                                        
+                                </div>`;      
+                },
                 background(configs) {
                     const { bgImage, bgRepeat, bgPosition } = configs;
 
@@ -85,7 +111,10 @@ const componentsData = {
             }
 
             let configs,
-                windows=null
+                windows=null,
+                inputs=null,
+                previewImg,
+                previewCol
             function loadconfigs() {
                 configs = {
                     "bgHeight": "100",
@@ -103,7 +132,7 @@ const componentsData = {
             function backgroundChanges(e1, configs) {
                 //e1 主题设置的窗口  e2桌面背景
 
-                e1.style.background = templete.background(configs)
+                e1.style.background = template.background(configs)
                 e1.style.backgroundSize = `${configs.bgWidth}% ${configs.bgHeight}%`
             }
             function _init() {
@@ -115,7 +144,16 @@ const componentsData = {
             //启动和关闭函数
             function start(e,ev) {
                 ev.preventDefault()
-                let win=createNewWindow()
+                let win=createNewWindow();
+                if (!win) {
+					return console.log("Failed to create new window!");
+				}
+                
+                 win.body.innerHTML=template.window()
+                // windows=win;
+                // previewImg = win.dom.querySelector(`.mini-preview[data-type="image"]`);
+				// previewCol = win.dom.querySelector(`.mini-preview[data-type="color"]`);
+				// inputs = windows.dom.querySelectorAll("select, input");
             }
             function close() {
 
@@ -123,20 +161,19 @@ const componentsData = {
             function createNewWindow(){
                 const options={
                     data:false,
-                    appClass:setting.windowClass,
+                    appClass:settings.windowClass,
                     title:settings.name,
                     source:settings.constructorName,
                     icon:settings.icon
-                }
+                };
+                
                 return components[window].register(options)
             }
             return {
                 launch(e,ev) {
-                   // start(e,ev)
+                    start(e,ev)
                 },
-                close() {
-                  //  close()
-                }
+                
             }
         
         },
@@ -314,11 +351,10 @@ const componentsData = {
             }
         },
         windowManager(settings,shared=false){
-            const {guid,components}=shared;
-            cName=setting.constructorName,
-            taskName=settings.relationship.task
-            let windows={},focusId;
-            template = {
+            const { guid, components } = shared,
+                cName = settings.constructorName,
+                taskName = settings.relationship.task,   
+                template = {
                 window(settings) {
                     const {
                         id,
@@ -330,37 +366,63 @@ const componentsData = {
                         content = ""
                     } = settings;
                     return `<div class="container">
-									<div class="header no-select">
-										<h4 data-after-text="${subTitle}">
-											${title}
-										</h4>
-										<div class="minimize" data-click="${cName}.minimize" data-id="${id}">_</div>
-										<div class="close" data-click="${cName}.close" data-id="${id}">✖</div>
+								<div class="header no-select">
+									<h4 class="title"  data-after-text="${subTitle}">
+										${title}
+									</h4>
+									<div  class="minimize" data-click="${cName}.minimize" data-id="${id}">_</div>
+									<div  class="close" data-click="${cName}.close" data-id="${id}">✖</div>
 									</div>
 									${afterHeader}
 									<div class="content" data-id="${id}">${content}</div>
 									${afterContent}
 								</div>`;
+                  
                 }
-            }
+            },
+            focusedZ = 3,
+			normalZ = 2;
+            let windows={},focusId;
             function create(options){
-                const id=getNewID(),
-                      dom=document.createElement('div')
-                      task=components[taskName]
-                options.id=id
-                options.status=true
-                dom.innerHTML=template.window(options)
+                const id = getNewID(),
+                      dom = document.createElement("div")
+                      task = components[taskName];
+                options.id = id;
+                options.status = true;
+                dom.innerHTML = template.window(options);
+                dom.id = "win_" + options.id;
+                dom.dataset.id = options.id;
+                dom.dataset.click = cName + ".focus";
+                dom.classList.add('window', ...(options.appClass || []));
+                const cont = dom.querySelector(settings.contentSelector);
+                options.dom = dom;
+                options.header = dom.querySelector(".header");
+                options.body = cont;
+                //dragdrop(options.dom, options.header);
+                windows[id] = options;
+                document.body.append(dom);
+                //customizeWindow(dom, options);
+                //	task.add(options);
+                //	focus(id);
+                // if (shared.taskPanel) {
+                // 	shared.taskPanel.addToList(options);
+                // }
+                return options;
+
             }
+            
             function getNewID(){
-                let newID=guid()
-                if(windows['win_'+newId]){
-                    return newID;
-                }
+                let newID=guid();
+               
+                 if(!windows['win_'+newID]){
+                     
+                     return newID;
+                 }
                 return getNewID()
             }
-            return{
-                register(options){
-                   // create(options)
+            return {
+                register(options) {
+                    return create(options)
                 }
             }
         }
