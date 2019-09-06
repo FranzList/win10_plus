@@ -2,22 +2,98 @@
     position: relative;
     height: 40px;
 }
-  .start-menu{
-      width: 40px;
-      height: 40px;
-      padding: 10px;
-      opacity: 1;
-  }
-    .start-menu>div{
+    .start-menu{
+        display: none;
+        flex-direction: row;
+        top: -525px;
+        position: absolute;
+    }
+    .start-menu.show{
+        display: flex;
+    }
+    .sub-item-list ul{
+        overflow: hidden;
+        padding-left: 10px;
+        background: rgb(68, 68, 68)
+    }
+    .sub-item-list>ul::before{
+        content: 'welcome~';
+        top: -40px;
+        left: 0;
+        width: 659px;
+        height: 40px;
+        color: white;
+        font-size: 20px;
+        line-height: 40px;
+        position: absolute;
+        background: rgb(68, 68, 68);
+        padding-left: 10px;
+    }
+    .sub-item-list li{
+       display: flex;
+        width: 250px;
+        height: 35px;
+        padding: 1.5px;
+        padding-top: 20px;
+        transition: padding-top 0.2s ease;
+        
+    }
+    .sub-item-list li.show{
+        padding-top: 0px;
+    }
+    .sub-item-list li:hover{
+        background-color: rgb(109, 109, 109)
+    }
+    .sub-item-list li div{
+        padding: 6px;
+        background: rgb(0, 120, 215);
+        height:32px;
+        width: 32px;
+        
+    }
+    .sub-item-list li span{
+        
+        color: white;
+        font-size: 15px; 
+        margin-left: 10px;
+        line-height: 30px;  
+    }
+    
+    .startbtn{
+        padding: 10px;
+        width: 40px;
         height: 100%;
+        
+    }
+    
+    .startbtn>div{
         background: url(../assets/task/windows.png);
+        height: 100%;
+        width: 100%;
         background-position: center center;
         background-size: 100% 100%;
     }
-    .start-menu>div:hover{
-        background:url(../assets/task/windows-hover.png);
+    .startbtn>div:hover{
+        background: url(../assets/task/windows-hover.png);
         background-position: center center;
         background-size: 100% 100%;
     }
+    
+    .main-item-list{
+        border-left: 1px solid rgb(109, 109, 109);
+        padding-top: 20px;
+        width: 409px;
+        height: 525px;
+        background: rgb(68, 68, 68);
+        display: flex;
+        flex-direction: column;
+        transition: padding-top 0.2s ease;
+    }
+    .main-item-list.show{
+        padding-top:0px;
+    }
+     .block1,.block2{
+         border-bottom: 2px solid black;
+     }
   
 

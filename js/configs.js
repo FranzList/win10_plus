@@ -34,6 +34,18 @@ const componentsData = {
                 window: 'windowManager',
             }
         },
+        startMenuManager: {
+			id: "strtmnmngr",
+			name: "Start Menu",
+			description: "Responsable for start menu",
+			icon: "",
+			label: "Start",
+			placeholder: ".start-menu-button",
+			maxProc: 1,
+			relationship: {
+				datasource: 'fileSystem'
+			}
+		},
         fileSystem:{
             id: "flsstm",
             name: "File System",
@@ -83,7 +95,7 @@ const componentsData = {
             const { components } = shared,
                 {window} = settings.relationship,
                 cName = settings.constructorName,
-                bgImg = document.querySelector('.bg-img');
+                bgImg = document.querySelector('.bg-img'),
                 template = {
                     window() {
                         const s = screen,
@@ -97,7 +109,13 @@ const componentsData = {
                                     </div>
                                     <p>选择图片</p>
                                     <div class="img-container">
-                                    <img><img/>
+                                    
+                                    <img src="assets/background/th.jpg">
+                                    <img src="assets/background/th1.jpg">
+                                    <img src="assets/background/th2.jpg">
+                                    <img src="assets/background/th3.jpg">
+                                    <img src="assets/background/th4.jpg">
+                                                                        
                                     </div>
                                     <button>浏览</button>                                                        
                                 </div>`;      
@@ -129,34 +147,59 @@ const componentsData = {
                     "startColor": "#0000ff"
                 }
             }
-            function backgroundChanges(e1, configs) {
+            function backgroundChanges(e1,e2,settings) {
                 //e1 主题设置的窗口  e2桌面背景
 
-                e1.style.background = template.background(configs)
-                e1.style.backgroundSize = `${configs.bgWidth}% ${configs.bgHeight}%`
+                e1.style.background = template.background(settings)
+                e1.style.backgroundSize=`cover`
+                if(e2){    
+                    e2.style.background = template.background(settings)
+                    
+                    e2.style.backgroundSize=`cover`
+                }
+                
             }
             function _init() {
 
                 loadconfigs();
-                backgroundChanges(bgImg, configs)
+                backgroundChanges(bgImg,e2=null, configs)
             }
             _init()
             //启动和关闭函数
             function start(e,ev) {
                 ev.preventDefault()
+                if(windows){return}
                 let win=createNewWindow();
                 if (!win) {
 					return console.log("Failed to create new window!");
-				}
+                }
+                
                 
                  win.body.innerHTML=template.window()
-                // windows=win;
-                // previewImg = win.dom.querySelector(`.mini-preview[data-type="image"]`);
-				// previewCol = win.dom.querySelector(`.mini-preview[data-type="color"]`);
-				// inputs = windows.dom.querySelectorAll("select, input");
+                 windows=win;
+                 previewImg = win.dom.querySelector(`.mini-previews`);
+                 previewImg.style.background=bgImg.style.background
+                 imgs = windows.dom.querySelectorAll("img");
+                 for (let index = 0; index < imgs.length; index++) {
+                    imgs[index].addEventListener('click',applyChanges);    
+                 }                              
             }
-            function close() {
-
+            
+            function close(){
+                windows=null
+            }
+            
+            function applyChanges(){
+               
+                const imgsrc=this.src.substring(this.src.indexOf('background'),this.src.length).split('/')[1];
+                const settings={
+                    bgImage:imgsrc,
+                    bgRepeat:configs.bgRepeat,
+                    bgPosition:configs.bgPosition,                
+               }
+               
+               backgroundChanges(bgImg,previewImg,settings)
+               
             }
             function createNewWindow(){
                 const options={
@@ -173,7 +216,9 @@ const componentsData = {
                 launch(e,ev) {
                     start(e,ev)
                 },
-                
+                close(e){
+                  close(e)
+                }                          
             }
         
         },
@@ -188,6 +233,7 @@ const componentsData = {
                 dom.style.width='200px'
                 dom.textContent=''
                 dom.id=id
+                dom.style.zIndex=-1;
                 document.body.appendChild(dom)
                 dom.addEventListener('blur',blurEvent)
                 dom.onclick=()=>{setTimeout(blurEvent,100)}
@@ -334,15 +380,22 @@ const componentsData = {
                 init();
             },'json')
             function init(){
-              let desktopItems=[]
+              let desktopItems=[],
+                  startMenuItems=[];
               for (const item of vfs.child) {                 
                   if(item.ondesktop){
                     desktopItems.push(item)
+                  }
+                  if(item.onstartmenu){
+                    startMenuItems.push(item)
                   }
               }
               if(desktopItems.length){
                 
                 components[relationship.desktop]._init(desktopItems)
+              }
+              if(startMenuItems.length){
+                components[relationship.startmenu].init(startMenuItems)  
               }
             }
             return {
@@ -400,6 +453,7 @@ const componentsData = {
                 options.body = cont;
                 //dragdrop(options.dom, options.header);
                 windows[id] = options;
+                
                 document.body.append(dom);
                 //customizeWindow(dom, options);
                 //	task.add(options);
@@ -409,6 +463,13 @@ const componentsData = {
                 // }
                 return options;
 
+            }
+            function close(options){
+                const id=options.dataset.id,
+                      win=windows[id]
+                components[win.source].close(win)
+                win.dom.remove()
+                delete windows[id];
             }
             
             function getNewID(){
@@ -423,6 +484,107 @@ const componentsData = {
             return {
                 register(options) {
                     return create(options)
+                },
+                close(options){
+                  close(options)
+                }
+            }
+        },
+        startMenuManager(settings,shared=false){
+            const taskbar = document.querySelector('#footer'),
+                { blurable } = shared,
+                cName = settings.constructorName,
+                datasource = settings.relationship.datasource,
+                template={
+                    startMenu(itemList){
+                        const icons=template.createList(itemList)
+                        return `<div class="start-menu no-select">
+						<div class="start-menu-title">
+							<h3> Welcome Guest! </h3>
+                        </div>
+                        
+						<div class="sub-item-list">
+							<ul >${icons}${icons}${icons}</ul>
+                        </div>
+                        
+						<div class="main-item-list">
+                          <div class="block1" style="flex:3;display:flex;flex-direction:row;">
+                            <div style="flex:2;background:rgb(0,120,215);"></div>
+                            <div style="flex:1;border-left:2px solid black;display:flex;flex-direction:column">
+                              <div style="flex:1;background:rgb(0,120,215);border-bottom:2px solid black;"></div>
+                              <div style="flex:1;background:rgb(0,120,215);"></div>
+                            </div>
+                          </div>
+                        	
+                          <div class="block2" style="flex:2;display:flex;flex-direction:row;">
+                            <div style="flex:1;display:flex;">
+                              <div style="flex:1;display:flex;flex-direction:row">
+                                <div style="flex:1;background:rgb(0,120,215);display:flex;flex-direction:column">
+                                  <div style="flex:1;background:rgb(0,120,215);border-bottom:2px solid black"></div>
+                                  <div style="flex:1;background:rgb(0,120,215);"></div>
+                                </div>
+                                <div style="border-left:2px solid black;flex:1;background:rgb(0,120,215);display:flex;flex-direction:column">
+                                  <div style="flex:1;background:rgb(0,120,215);border-bottom:2px solid black"></div>
+                                  <div style="flex:1;background:rgb(0,120,215);"></div>
+                                </div>
+                                  
+                              </div>
+                               
+                            </div>
+                            <div style="flex:1;background:rgb(0,120,215);border-left:2px solid black"></div>
+                          </div> 
+                          
+                            
+                                                   	                        
+					</div>`;
+                    },
+                    createList(itemList){
+                        let lilist=''
+                        for (const item of itemList) {
+                        lilist+=`<li><div><img height="20" width="20" src="./assets/startmenu/${item.icon}.ico"></div><span>${item.name}<span></li>`
+                        }
+                        return lilist;
+                    }
+                }
+
+            let startMenu, selected = false,lis;
+             
+            function init(list) {
+                taskbar.insertAdjacentHTML('afterbegin',template.startMenu(list))
+                startMenu = taskbar.querySelector('.start-menu')
+                blurable(startMenu, blurCb);
+            }
+            
+            function blurCb(ev) {
+                 console.log(ev)
+                //  startMenu.classList.remove('show');
+                //  startMenu.querySelector('.main-item-list').classList.remove('show');
+                //  if(lis.length){
+                //     for (let index = 0; index < lis.length; index++) {
+                //         lis[index].classList.remove('show')      
+                //     }
+                //  }
+                
+            }
+            
+            return {
+                init(list) {
+                    init(list)
+                },
+                toggle(){
+
+                    startMenu.classList.toggle('show');
+                    lis=startMenu.querySelectorAll('li');
+                    setTimeout(()=>{
+                        startMenu.querySelector('.main-item-list').classList.toggle('show')
+                        
+                        
+                         for (let index = 0; index < lis.length; index++) {
+                             lis[index].classList.toggle('show')      
+                         }
+                    },5)
+                    
+                    startMenu.focus();
                 }
             }
         }
