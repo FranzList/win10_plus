@@ -5,7 +5,7 @@
 			"name":"我的电脑",
 			"id":"qcqXWjbeQUPZtxfeI5rN6yWsIQbzYRXo",
 			"description":"Here for my resumes",
-			"icon":"folder",
+			"icon":"mycpu",
 			"readonly":false,
 			"ondesktop":true,
 			"onstartmenu":true,
