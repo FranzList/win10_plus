@@ -20,7 +20,7 @@ function VirtualOS() {
         getPath,
         // isEmpty,
         // objClone,
-        blurable
+        // blurable
     }
 
     loadScript('script', 'configs', () => {
@@ -48,17 +48,14 @@ function VirtualOS() {
     function globalEvent(ev) {
         
         const e=getActionNode(ev.target,ev.type)
-        
         if(!e)return;
         //阻止鼠标右键
         
         const action = e.dataset[ev.type]
 
-        if (ev.type === 'contextmenu') {
+        if (ev.type != 'click') {
             ev.preventDefault();
         }
-        
-           
         
         if (action.indexOf(".") > -1) {
             //创建右键菜单。。。
@@ -84,13 +81,7 @@ function VirtualOS() {
                 return e;
             }
         }
-        
         return null
-    }
-    function blurable(dom,func){
-        
-        dom.tabIndex = -1;
-        dom.onblur = func;
     }
     function callComponent(element = null, path = null, events = null) {
         const methods = path.split('.')
