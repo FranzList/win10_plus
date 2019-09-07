@@ -34,6 +34,25 @@ const componentsData = {
                 window: 'windowManager',
             }
         },
+        fileExplorer: {
+			id: "flxplrr",
+			name: "File Explorer",
+			description: "Responsable for browsing in directories",
+			windowClass: ["file-explorer", "window-light-blue"],
+			windowSize: {
+				minW: 200,
+				minH: 200,
+			},
+			icon: "folder",
+			taskbar: true,
+			randomPosition: true,
+			maxProc: 20,
+			relationship: {
+				desktop: 'desktopManager',
+				window: 'windowManager',
+				datasource: 'fileSystem'
+			},
+		},
         startMenuManager: {
 			id: "strtmnmngr",
 			name: "Start Menu",
@@ -233,7 +252,7 @@ const componentsData = {
                 dom.style.width='200px'
                 dom.textContent=''
                 dom.id=id
-                dom.style.zIndex=-1;
+                
                 document.body.appendChild(dom)
                 dom.addEventListener('blur',blurEvent)
                 dom.onclick=()=>{setTimeout(blurEvent,100)}
@@ -328,11 +347,12 @@ const componentsData = {
                 }
             }
             function createMenu(e, ev) {
-                const{id,container,type}=e.dataset
+                const{id,container,type}=e.dataset,
                       ds=components[datasource],
-                      menu=components[relationship.menu]
+                      menu=components[relationship.menu];
 
-                      let list;
+                let list;
+               
                 if(type=='free'){
                     //桌面
                     
@@ -347,7 +367,7 @@ const componentsData = {
                else if(type=='icon'){
                     //文件
                     list=[
-                        ["打开", ds, "execute", [id]],
+                        ["打开",datasource , "execute", [id]],
 						["复制", relationship.clipboard, "addItems", ['fs', id, 'false']],
 						["剪切", relationship.clipboard, "addItems", ['fs', id, 'true']],
 						["重命名", cName, "toggleRename", [id]],
@@ -359,6 +379,34 @@ const componentsData = {
                     menu.create(ev,list,id)
                 }
             }
+            function start(e, ev) {
+				
+				const ds = components[datasource],
+					id = e.parentNode.dataset.id || null,
+					item = ds.get(id),
+					t = e.parentNode;
+				if (!id || !item) {
+					return console.log("file not exist or missing id");
+				}
+				if (windows.length >= settings.maxProc) {
+					return console.log('Too much opened window, cannot open more!');
+				}
+
+				let win = createNewWindow();
+				if (!win) {
+					console.log("Failed to create new window!");
+					return false;
+				}
+				win.body.innerHTML = template.properties(item);
+
+				win.h4 = win.dom.querySelector('.header h4');
+				win.h4.dataset["afterText"] = "- " + item.name;
+				win.dom.style.top = ev.clientY - t.offsetHeight;
+				win.dom.style.left = parseInt(t.parentNode.style.left, 10);
+				windows.push(win);
+				return win;
+			}
+           
 
 
           return {
@@ -367,47 +415,219 @@ const componentsData = {
                 },
                 _createMenu(e,ev){
                     createMenu(e,ev)
-                }
+                },
+                createIcon(item, container, newWindow) {
+					CreateDesktopIcon(item, container, newWindow);
+                },
+                properties(e, ev) {
+					start(e, ev);
+				},
+                
             }
         },
         fileSystem(settings, shared = false) {
-            const{req,components,guid,objClone,assoc}=shared,
-                relationship=settings.relationship;
-            let vfs;
-            req('json','vfs',d=>{
-                vfs=d;
-               
-                init();
-            },'json')
-            function init(){
-              let desktopItems=[],
-                  startMenuItems=[];
-              for (const item of vfs.child) {                 
-                  if(item.ondesktop){
-                    desktopItems.push(item)
-                  }
-                  if(item.onstartmenu){
-                    startMenuItems.push(item)
-                  }
-              }
-              if(desktopItems.length){
-                
-                components[relationship.desktop]._init(desktopItems)
-              }
-              if(startMenuItems.length){
-                components[relationship.startmenu].init(startMenuItems)  
-              }
-            }
-            return {
-                init(){
-                }
-            }
-        },
+			const {req, components, guid, objClone, assoc} = shared,
+				relationship = settings.relationship;
+			let vfs;
+
+			if (localStorage.getItem('vfs')) {
+				vfs = JSON.parse(localStorage.getItem('vfs'));
+				init();
+			} else {
+				req("json", "vfs", d => {
+					vfs = d;
+					init();
+				}, 'json' );
+			}
+
+			function init() {
+				const hash = location.hash ? location.hash.substr(1) : false;
+				let desktopItems = [],
+					startMenuItems = [],
+					item;
+				for (item of vfs.child) {
+					if (item.ondesktop) {
+						desktopItems.push(item);
+					}
+					if (item.onstartmenu) {
+						startMenuItems.push(item);
+					}
+				}
+
+				if (desktopItems.length) {
+					components[relationship.desktop]._init(desktopItems);
+				}
+
+				if (startMenuItems.length) {
+					components[relationship.startmenu].init(startMenuItems);
+				}
+
+				
+				
+			}
+
+			function searchInVfs(items, id) {
+				let e, item;
+				for (item of items) {
+					if (item.id == id) {
+						item.path = [];
+						item.parent = [];
+						return item;
+					}
+					if (item.child) {
+						e = searchInVfs(item.child, id);
+						if (e && e.id == id) {
+							e.path.push(item.id);
+							e.parent.push(item.name);
+							return e;
+						}
+					}
+				}
+				return null;
+			}
+
+			function deleteItem(items, id) {
+				let i, max = items.length;
+				for (i = 0; i < max; i++) {
+					if (items[i].id == id) {
+						items.splice(i, 1);
+						save();
+						return true;
+					}
+					if (items[i].child) {
+						if (deleteItem(items[i].child, id) === true) {
+							return true;
+						};
+					}
+				}
+				return null;
+			}
+
+			function add(items, to) {
+				let target = to == -1 ? vfs : searchInVfs(vfs.child, to);
+				if (!target) {
+					return false;
+				}
+				if (!target.child) {
+					target.child = [];
+				}
+				target.child.push(...items);
+				save();
+				return true;
+			}
+
+			function save() {
+				localStorage.setItem('vfs', JSON.stringify(vfs))
+				return true;
+			}
+
+			function prepareItems(items, remove) {
+				let i, max = items.length;
+				for (i = 0; i < max; i++) {
+					items[i].id = guid();
+					if (!remove) {
+						items[i].name = items[i].name + " copy";
+					}
+					if (items[i].child) {
+						prepareItems(items[i].child, remove);
+					}
+				}
+				return null;
+			}
+
+			function prepareItem(item, remove) {
+				if (Array.isArray(item)) {
+					return prepareItems(item, remove);
+				}
+
+				item.id = guid();
+				if (!remove) {
+					item.name = item.name + " copy";
+				}
+
+				if (item.child && item.child.length > 0) {
+					return prepareItems(item.child, true);
+				}
+				return;
+			}
+
+			function copyItem(targetId, sourceId, removeItem = false) {
+				const sourceItem = searchInVfs(vfs.child, sourceId);
+				if (!sourceItem) { return null; }
+				const itemCopy = objClone(sourceItem);
+				if (targetId == -1) {
+					itemCopy['ondesktop'] = true;
+				}
+				prepareItem(itemCopy, removeItem);
+				if (!add([itemCopy], targetId)) {
+					return false;
+				};
+				if (removeItem) {
+					deleteItem(vfs.child, sourceId);
+				}
+				return itemCopy;
+			}
+
+			function openItem(item, e = {}, ev = {} ) {
+				if (!item) {
+					return;
+				}
+				const app = components[assoc[item.type] || "-"] || false;
+
+				if (!item) {
+					return console.log("File corrupt or not exist anymore!");
+				} else if (item.url && item.type == "url") {
+					window.open (item.url,"mywindow");
+				} else if (item.text && item.type == "alert") {
+					alert(item.text);
+				} else if (!app || !app.open) {
+					return console.log("Not exist associated application!");
+				}
+				app.open(e, ev);
+			}
+
+			function execute(e, ev) {
+				let id = e.dataset.id;
+				
+				if (!id) {
+					
+					return console.log("This file not have id!");
+				}
+				openItem(searchInVfs(vfs.child, id), e, ev);
+			}
+
+			return {
+				add(items, to) {
+					return add(items, to);
+				},
+				copyItem(targetId, sourceId, removeItem = false) {
+					return copyItem(targetId, sourceId, removeItem);
+				},
+				execute(e, ev) {
+					execute(e, ev);
+				},
+				get(id) {
+					return searchInVfs(vfs.child, id);
+				},
+				getDatabase() {
+					return vfs;
+				},
+				search(items, id) {
+					return searchInVfs(items, id);
+				},
+				remove(id) {
+					return deleteItem(vfs.child, id)
+				},
+				save() {
+					return save();// save into localstorage
+				}
+			}
+		},
         windowManager(settings,shared=false){
             const { guid, components } = shared,
-                cName = settings.constructorName,
-                taskName = settings.relationship.task,   
-                template = {
+            taskMName = settings.relationship.task,
+            cName = settings.constructorName,
+             template = {
                 window(settings) {
                     const {
                         id,
@@ -418,77 +638,229 @@ const componentsData = {
                         afterContent = "",
                         content = ""
                     } = settings;
+                    
                     return `<div class="container">
-								<div class="header no-select">
-									<h4 class="title"  data-after-text="${subTitle}">
-										${title}
-									</h4>
-									<div  class="minimize" data-click="${cName}.minimize" data-id="${id}">_</div>
-									<div  class="close" data-click="${cName}.close" data-id="${id}">✖</div>
-									</div>
-									${afterHeader}
-									<div class="content" data-id="${id}">${content}</div>
-									${afterContent}
-								</div>`;
-                  
+                                <div class="header no-select">
+                                    <h4 class="title" data-after-text="${subTitle}">
+                                        ${title}
+                                    </h4>
+                                    <div class="minimize" data-click="${cName}.minimize" data-id="${id}">_</div>
+                                    <div class="close" data-click="${cName}.close" data-id="${id}">✖</div>
+                                </div>
+                                ${afterHeader}
+                                <div class="content" data-id="${id}">${content}</div>
+                                ${afterContent}
+                            </div>`;
                 }
             },
             focusedZ = 3,
-			normalZ = 2;
-            let windows={},focusId;
-            function create(options){
-                const id = getNewID(),
-                      dom = document.createElement("div")
-                      task = components[taskName];
-                options.id = id;
-                options.status = true;
-                dom.innerHTML = template.window(options);
-                dom.id = "win_" + options.id;
-                dom.dataset.id = options.id;
-                dom.dataset.click = cName + ".focus";
-                dom.classList.add('window', ...(options.appClass || []));
-                const cont = dom.querySelector(settings.contentSelector);
-                options.dom = dom;
-                options.header = dom.querySelector(".header");
-                options.body = cont;
-                //dragdrop(options.dom, options.header);
-                windows[id] = options;
+            normalZ = 2;
+
+        let windows = {}, focusedId;
+
+        function getNewId() {
+            let newId = guid();
+            
+            if (!windows['win_'+newId]) {
+                return newId;
+            }
+            return getNewId();
+        };
+
+
+        function dragdrop(e1, e2 = null) {
+            e1 = typeof e1 === "string" ? document.body.querySelector(e1) : e1;
+            e2 = typeof e2 === "string" ?  document.body.querySelector(e2 || e1) : e2;
+            e2.addEventListener('mousedown', dragHandler);
+            let body = document.body,
+                html = document.documentElement,
+                eWidth = e1.offsetWidth,
+                eHeight = e1.offsetHeight,
+                mWidth = Math.max(body.offsetWidth, html.offsetWidth)-eWidth,
+                mHeight =  Math.max(body.offsetHeight, html.offsetHeight)-eHeight,
+                cX, cY, x, y, pos = e1.style.position,
+                shiftX, shiftY;
+
+            e1.style.position = 'fixed';
+
+            function move(x, y) {
+                e1.style.left = x+'px';
+                e1.style.top = y+'px';
+            }
+
+            function mousemove (e) {
+                x = e.clientX-shiftX;
+                y = e.clientY-shiftY;
+                cX = x >  mWidth ? mWidth : x < 0 ? 0 : x;
+                cY = y >  mHeight ? mHeight : y < 0 ? 0 : y;
+                move(cX, cY);
+            }
+
+            function mouseup (e) {
+                body.removeEventListener('mousemove', mousemove);
+                window.removeEventListener('mouseup', mouseup);
+                body.removeEventListener('mouseup', mouseup);
+                e2.addEventListener('mousedown', dragHandler);
+                e1.dataset.move = "false";
+                if (e1.dataset.id && e1.classList.contains('window')) {
+                    focus(e1.dataset.id);
+                }
+                //e.preventDefault();
+            }
+
+            function dragHandler(e){
+                const { width, height } = e1.style,
+                    { move = "false", id = false } = e1.dataset;
+                if (move == "true" || width == "100%" || height == "100%")  {
+                    return;
+                }
+                if (id && e1.classList.contains('window')) {
+                    focus(id);
+                }
+                body.addEventListener('mousemove', mousemove);
+                // use window => mouse could be released when pointer isn't over the body
+                window.addEventListener('mouseup', mouseup);
+                e1.dataset.move = "true";
+                shiftX = e.clientX - e1.offsetLeft;
+                shiftY = e.clientY - e1.offsetTop;
+            }
+
+        }
+
+        function customizeWindow(dom, options) {
+            const  winSize = options.windowSize || {};
+            
+            let width, height;
+            if (winSize.full) {
                 
-                document.body.append(dom);
-                //customizeWindow(dom, options);
-                //	task.add(options);
-                //	focus(id);
-                // if (shared.taskPanel) {
-                // 	shared.taskPanel.addToList(options);
-                // }
-                return options;
+                width = "100%";
+                height = "calc(100% - 34px)";
+                dom.style.top = '0px';
+                dom.style.left = '0px';
+            } else if (options.randomPosition) {
+                
+                const body = document.body,
+                    {
+                        minW = 400,
+                        minH = 200,
+                        maxW = 800,
+                        maxH = 400
+                    } = options.windowSize || {},
+                    limitX = body.offsetWidth,
+                    limitY = body.offsetHeight - 33,
+                    maxX = Math.min(limitX, maxW),
+                    maxY = Math.min(limitY, maxH);
+                width = Math.floor(Math.random() * (maxX - minW) + minW) + 'px';
+                height = Math.floor(Math.random() * (maxY - minH) + minH) + 'px';
+                dom.style.top = Math.random() * (limitX - width) + 'px';
+                dom.style.left = Math.random() * (limitY - height) + 'px';
+            }
+            dom.style.width = width;
+            dom.style.height = height;
+            
+        }
+
+        function create(options) {
+            
+            const id = getNewId(),
+                dom = document.createElement("div")
+                task = components[taskMName];
+            options.id = id;
+            options.status = true;
+            dom.innerHTML = template.window(options);
+            dom.id = "win_" + options.id;
+            dom.dataset.id = options.id;
+            dom.dataset.click = cName+".focus";
+            dom.classList.add('window', ...(options.appClass || []));
+            const cont = dom.querySelector(settings.contentSelector);
+            options.dom = dom;
+            options.header = dom.querySelector(".header");
+            options.body = cont;
+            dragdrop(options.dom, options.header);
+            windows[id] = options;
+            
+            document.body.append(dom);
+            //customizeWindow(dom, options);
+            // task.add(options);
+             focus(id);
+            //   if (shared.taskPanel) {
+            //       shared.taskPanel.addToList(options);
+            //   }
+            return options;
+            
+        }
+
+        function minimize(id) {
+            
+            const win = windows[id];
+            if (!win) { return console.log('Window not found'); }
+            win.status = !win.status;
+            win.dom.classList.toggle('minify');
+            unfocus(id);
+            focusedId = null;
+        }
+
+        function close(e) {
+            const id = e.dataset.id,
+                win = windows[id],
+                task = components[taskMName];
+            if (!win) { return console.log('Window not found'); }
+            if (shared.taskPanel) {
+                shared.taskPanel.removeFromList(win);
+            }
+            components[win.source].close(win);
+            win.dom.remove();
+           // task.close(windows[id]);
+            delete windows[id];
+        }
+
+        function unfocus(id) {
+            if (windows[id]) {
+                windows[id].dom.style.zIndex = normalZ;
+                //components[taskMName].unfocus(windows[id]);
+            }
+            focusedId = null;
+        }
+
+        function focus(id = false) {
+            if (!id) {
+                return;
+            }
+
+            unfocus(focusedId);
+
+            if (windows[id] && focusedId != id) {
+                if (!windows[id].status) {
+                    minimize(id);
+                }
+                windows[id].dom.style.zIndex = focusedZ;
+                focusedId = id;
+              //  components[taskMName].focus(windows[id]);
+            }
+        }
+
+        return {
+            close(options) {
+                close(options);
+            },
+            focus(e, ev) {
+                const id = typeof e != "object" ? e : e.dataset.id;
+                focus(id, status);
+            },
+            minimize(e, ev) {
+                ev.preventDefault();
+                minimize(e.dataset.id);
+            },
+            getWindow(id = false) {
+                return !id ? windows : windows[id] || null;
+            },
+            register(options) {
+                return create(options);
+            },
+            remove() {
 
             }
-            function close(options){
-                const id=options.dataset.id,
-                      win=windows[id]
-                components[win.source].close(win)
-                win.dom.remove()
-                delete windows[id];
-            }
-            
-            function getNewID(){
-                let newID=guid();
-               
-                 if(!windows['win_'+newID]){
-                     
-                     return newID;
-                 }
-                return getNewID()
-            }
-            return {
-                register(options) {
-                    return create(options)
-                },
-                close(options){
-                  close(options)
-                }
-            }
+        }
         },
         startMenuManager(settings,shared=false){
             const taskbar = document.querySelector('#footer'),
@@ -587,6 +959,431 @@ const componentsData = {
                     startMenu.focus();
                 }
             }
-        }
+        },
+        fileExplorer(settings, shared = false) {
+
+			const { components } = shared,
+				{ datasource: ds, window, desktop: icon } = settings.relationship;
+
+			const template = {
+				addressbar(item, options) {
+					const {cont, itemId, newWin} = options;
+					return `<div class="addressbar">
+								<span class="home">
+									<img src="./assets/app/home.png">
+								</span>
+								<span class="up">
+									<img src="./assets/app/up.png">
+								</span>
+								<nav>
+									<ul></ul>
+								</nav>
+							</div>`;
+				}
+			}
+
+			let windows = [];
+
+			function addNavLink(win, item) {
+				const label = item.parent,
+					path = item.path,
+					len = label.length;
+				let i = 0, li;
+				win.nav.innerHTML = "";
+				win.nav.append(document.createElement("li"));
+				if (len > 0) {
+					label.reverse();
+					path.reverse();
+
+					for (;i < len; i++) {
+						li = document.createElement("li");
+						updateTargetData(li, path[i], win.id);
+						li.textContent = label[i];
+						win.nav.append(li);
+					}
+				}
+				li = document.createElement("li");
+				li.textContent = item.name;
+				win.nav.append(li);
+			}
+
+			function createNewWindow(item, d) {
+				const options = {
+					data: d,
+					appClass: settings.windowClass,
+					windowSize: settings.windowSize,
+					title: settings.name,
+					subTitle: "- "+item.name,
+					source: settings.constructorName,
+					icon: item.icon,
+					randomPosition: settings.randomPosition,
+					afterHeader: template.addressbar(
+						item, {
+							cont: d.container,
+							itemId: d.id,
+							newWin: d.new
+						}
+					),
+				};
+				return components[window].register(options);
+			}
+
+			function updateContent(item, d, win) {
+				const items = item.child || [],
+					desktop = components[icon];
+				for(const itm of items) {
+					desktop.createIcon(itm, win.body, false);
+				}
+			}
+
+			function updateTargetData(e, itemId, winId) {
+				e.dataset.id = itemId;
+				e.dataset.container = winId;
+				e.dataset.new = false;
+				e.dataset.click = `${ds}.execute`;
+			}
+
+			function open(e, ev) {
+
+				const d = e.dataset,
+					newWin = (d.new || false) === "true";
+				let win;
+				
+				if (!d.container || !d.id) {
+					return console.log('Cannot execute, insufficient information!');
+				}
+				const item = components[ds].get(d.id);
+				if (!item) {
+					return console.log('File or folder not exist!');
+				}
+
+				if (windows.length >= settings.maxProc && d.new) {
+					return console.log('Too much opened window, cannot open more!');
+				}
+
+				if (newWin) {
+					win = createNewWindow(item, d);
+
+					if (!win) {
+						return console.log("Failed to create new file explorer window!");
+					}
+					win.up = win.dom.querySelector('.up');
+					win.home = win.dom.querySelector('.home');
+					win.nav = win.dom.querySelector('.addressbar nav ul');
+					win.h4 = win.dom.querySelector('.header h4');
+					win.body.dataset.type = "free";
+					win.body.dataset.container = win.id;
+					win.body.dataset.contextmenu = "desktopManager._createMenu";
+					
+					windows.push(win);
+				} else if (d.container != "-1") {
+					win = components[window].getWindow(d.container);
+					if (!win) {
+						return console.log("File Explorer window not exist!");
+					}
+					win.body.innerHTML = "";
+				}
+				win.h4.dataset["afterText"] = "- " + item.name;
+				addNavLink(win, item);
+				win.body.dataset.itemId = item.id;
+				updateTargetData(win.home, item.path[0] || item.id, win.id)
+				updateTargetData(win.up, item.path.slice(-1)[0] || item.id, win.id)
+				updateContent(item, d, win);
+			}
+
+			function close(win) {
+				const len = windows.length;
+				let i = 0;
+				for (; i < len; i++) {
+					if (windows[i].id == win.id) {
+						return windows.splice(i, 1);
+					}
+				}
+			}
+
+			return {
+				close(win) {
+					close(win);
+				},
+				open(e, ev) {
+					open(e, ev);
+				},
+				remove() {
+
+				}
+			}
+        },
+        virtualClipboard(settings, shared = false) {
+			const container = document.querySelector(settings.container),
+				{ components, isEmpty } = shared;
+			let clipboard = [];
+
+
+			function addItems(e) {
+				clipboard.push(...[e.dataset.extra.split("/")]);
+				return true;
+			}
+
+			return {
+				getItems() {
+					return clipboard;
+				},
+				addItems(e, ev) {
+					addItems(e);
+				},
+				clear() {
+					clipboard = [];
+				}
+			}
+        },
+        taskManager(settings, shared = false) {
+			const { guid, components, blurable } = shared,
+				{ launch, window } = settings.relationship,
+				container = document.body.querySelector(settings.container),
+				group = container.querySelector(settings.group),
+				cName = settings.constructorName,
+				template = {
+					taskGroupBtn(options) {
+						const { id, icon, title, subTitle = "", source: group } = options;
+						return `<figure class="btn-task btn-group" data-click="${cName}.toggle" data-id="${id}" data-group=${group} data-contextmenu="${cName}.createMenu" title="${title}">
+									<img class="mini-icon" src="img/startmenu/${icon}.png">
+									<figcaption class="btn-text d-none d-md-iblock">${title}</figcaption>
+									<div class="d-none" data-sub-group="${group}"></div>
+								</figure>`;
+					},
+					taskBtn(options) {
+						const { id, icon, title, subTitle = "", source: group } = options
+							headerTitle = subTitle.length > 1 ? subTitle.substr(2) : title;
+						return `<figure class="btn-task" data-click="${window}.focus" data-id="${id}" data-group=${group} title="${title} ${subTitle}">
+									<img class="mini-icon d-none d-md-iblock" src="img/startmenu/${icon}.png">
+									<figcaption class="btn-text">${headerTitle}</figcaption>
+									<div data-sub-group="${group}"></div>
+								</figure>`;
+					},
+					killBtn(id, group) {
+						return `<div class="close" data-click="${window}.close" data-id="${id}" data-group="${group}">✖</div>`;
+					},
+					runningTaskHeader() {
+						const header = {
+							name: "Task",
+							id: "ID",
+							action: "Kill"
+						};
+						return template.runningTasks(header);
+					},
+					taskLine(obj) {
+						return template.runningTasks(obj);
+					},
+					runningTaskList(objList) {
+						if (!objList) { return ""; }
+						const header = template.runningTaskHeader();
+						let body = [];
+						for (const key in objList) {
+							console.log(objList);
+							const id = key,
+								o = objList[key];
+							body.push(template.taskLine({
+								name: o.title +" "+ (o.subTitle || ""),
+								id: id,
+								group: o.source || "",
+								action: template.killBtn(id, o.source)
+							}));
+
+						}
+
+						return header + body.join('');
+					},
+					runningTasks(d) {
+						if (!d.action) {
+							d.action = template.killBtn(d.id, d.group);
+						}
+						return `
+						<div class="row" data-group="${d.group}" data-id="${d.id}">
+							<div class="cell" data-type="name"> ${d.name} </div>
+							<div class="cell" data-type="id" title="${d.id}">${d.id.substr(0, 8)}</div>
+							<div class="cell" data-type="action">${d.action}</div>
+						</div>`;
+					}
+				},
+				focusClass = settings.focusClass;
+
+			let taskGroup = {}
+				selectedGroup = null,
+				windows = null;
+
+			function createNewWindow() {
+				const options = {
+					data: false,
+					appClass: settings.windowClass,
+					title: settings.name,
+					source: settings.constructorName,
+					icon: settings.icon,
+				};
+				return components[window].register(options);
+			}
+
+			function getGroupTask(group, id = false) {
+				let selector = `.row[data-group="${group}"]`;
+				if (id) {
+					selector += `[data-id="${id}"]`;
+				}
+				return windows.body.querySelectorAll(selector);
+			}
+
+			function addToList(options) {
+				const {
+						source: group,
+						id = false,
+						title,
+						subTitle = ""
+					} = options,
+				 	doms = getGroupTask(group, id),
+					taskOption = {
+						group,
+						id,
+						name: title +" "+ subTitle
+					};
+				windows.body.insertAdjacentHTML('beforeend', template.taskLine(taskOption));
+			}
+
+			function removeFromList(options) {
+				const { source: group, id = false } = options,
+					doms = getGroupTask(group, id);
+				if (doms.length) {
+					for (const dom of doms) {
+						dom.remove();
+					}
+				}
+			}
+
+			function start(e, ev) {
+				ev.preventDefault();
+				if (windows) {
+					return components[window].focus(windows.id);
+				}
+
+				let win = createNewWindow();
+				if (!win) {
+					return console.log("Failed to create new window!");
+				}
+				win.body.innerHTML = template.runningTaskList(components[window].getWindow());
+				windows = win;
+				win.addToList = addToList;
+				win.removeFromList = removeFromList;
+				shared.taskPanel = win
+			}
+
+			function getSubContainer(groupId) {
+				return group.querySelector(`[data-sub-group="${groupId}"]`);
+			}
+
+			function create(options, type) {
+				const { id, source: groupId} = options;
+				if (type == "main") {
+					taskGroup[groupId] = { child: {} };
+					group.insertAdjacentHTML('beforeend', template.taskGroupBtn(options));
+					taskGroup[groupId]['dom'] = group.lastChild;
+					taskGroup[groupId]['subGroup'] = group.lastChild.querySelector(`[data-sub-group="${groupId}"]`);
+					blurable(group.lastChild, blurCb);
+				}
+
+				const subContainer = getSubContainer(groupId);
+				subContainer.insertAdjacentHTML('beforeend', template.taskBtn(options));
+				options.btn = subContainer.lastChild;
+				taskGroup[groupId]['child'][id] = options;
+			}
+
+			function blurCb(e) {
+				toggle(e.target, "add");
+			}
+
+			function add(options) {
+				const { id, source: groupId} = options;
+				create(options, !taskGroup[groupId] ? "main" : false);
+			}
+
+			function close(options) {
+				const { id, source: groupId} = options;
+				if (groupId == cName) {
+					shared.taskPanel = null;
+					windows = null;
+				}
+				if (!taskGroup[groupId]) { return; }
+				taskGroup[groupId]['child'][id].btn.remove();
+				delete taskGroup[groupId]['child'][id];
+				if (Object.keys(taskGroup[groupId].child).length == 0) {
+					taskGroup[groupId].dom.remove();
+					delete taskGroup[groupId];
+				}
+			}
+
+			function focus(win, select = false) {
+				const { id, source: groupId} = win;
+				if (taskGroup[groupId] && taskGroup[groupId]['child'][id]) {
+					const taskBtn = taskGroup[groupId]['child'][id];
+					taskBtn.btn.classList[select ? 'add' : 'remove'](focusClass);
+				}
+			}
+
+			function toggle(e, type = "toggle") {
+				const {id, group} = e.dataset;
+				taskGroup[group].subGroup.classList[type]('d-none');
+
+				if (!selectedGroup) {
+					selectedGroup = id;
+					return;
+				}
+			}
+
+			function createMenu(e, ev) {
+				const { id, group = false, type = "icon" } = e.dataset,
+
+					list = [
+						["New Folder", cName, "createNew", [targetId, container, 'dir']],
+						["New File", cName, "createNew", [targetId, container, 'html']],
+						["Paste", cName, "paste", [targetId, container, type]],
+					//	["Arrange Icon", relationship.clipboard, "addItems", ['fs', id, 'true']],
+						["Terminal", cName, "remove", [targetId]],
+						["Settings", cName, "toggleRename", [targetId]],
+						["Properties", cName, "details", [targetId]],
+					];
+
+					if (isEmpty(clipboard.getItems())) {
+						list.splice(2, 1);
+					}
+
+
+				if (list) {
+					menu.create(ev, list, targetId );
+				}
+			}
+
+			return {
+				focus(win) {
+					focus(win, true);
+				},
+				unfocus(win, select = false) {
+					focus(win, false);
+				},
+				close(options) {
+					close(options);
+				},
+				createMenu(e, ev) {
+					createMenu(e, ev);
+				},
+				add(options) {
+					add(options);
+				},
+				launch(e, ev) {
+					start(e, ev);
+				},
+				remove() {
+
+				},
+				toggle(e, ev) {
+					toggle(e);
+				},
+			}
+		},
     }
 }

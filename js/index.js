@@ -6,13 +6,21 @@ function VirtualOS() {
     // $(document).ready(function(){
 
     // })
-
+    const fileTypeAssoc = {
+        "html": "htmlViewer",
+        "dir": "fileExplorer",
+        "alert": "alert",
+        "url": "fileSystem",
+        "shell": "terminal",
+        "task": "taskManager",
+        "display": "desktopManager"
+    };
     //函数绑定
     const shared = {
         components: {},
         closable: [],
         req: loadScript,
-        // assoc: fileTypeAssoc,
+        assoc: fileTypeAssoc,
         // getNamedDate,
         // getFormattedTime,
         // sec2Date,
