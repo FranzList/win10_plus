@@ -520,7 +520,30 @@ const componentsData = {
 				}
 				clipboard.clear()
 			}
-           
+			function deleteIcon(id) {
+				const icons = document.body.querySelectorAll(`.de-icon[data-item-id="${id}"]`);
+				for (const icon of icons) {
+					icon.remove();
+				}
+			}
+			function remove(e) {
+				const id = e.dataset.id;
+					
+
+				if (components[datasource].remove(id)){
+					deleteIcon(id);
+				}
+			}
+			function getParent(e) {
+				
+				const parent = e.parentNode,
+					id = parent.dataset.id || null;
+				if (!id) {
+					return console.log("Id not exist on parent elem!");
+				}
+				console.log(parent)
+				return document.querySelector(`div.icon-text[data-id="${id}"]`);
+			}
 
 
           return {
@@ -542,6 +565,10 @@ const componentsData = {
 				paste(e, ev) {
 					paste(e);
 				},
+				remove(e) {
+					remove(getParent(e));
+				},
+				
                 
             }
         },
