@@ -322,7 +322,7 @@ const componentsData = {
         },
         desktopManager(settings, shared = false) {
             const defaultContainer=document.querySelector(settings.container),
-                {components,getPath,assoc,sec2Date}=shared,
+                {guid,components,getPath,assoc,sec2Date}=shared,
                 cName=settings.constructorName,
                 relationship=settings.relationship,
                 {datasource,window,display}=relationship,
@@ -370,14 +370,91 @@ const componentsData = {
 						</div>
 					</p>
 				</div>`);
+				const icon = targetContainer.lastChild;
+				icon.querySelector("input").onblur = inputBlur;
+				icon.querySelector("input").onkeyup = nameConfirm;
+				createDragable(icon);
                 
-            }
+			}
+			function createDragable(e) {
+				e.ondragstart = dragStart;
+				e.draggable = true;
+			}
+			function dragStart(ev) {
+				
+				const id = ev.target.parentNode.parentNode.dataset.id;
+				ev.dataTransfer.setData("Text", id);
+			}
+			function inputBlur(e) {
+				e.preventDefault();
+				toggleRename(e.target.parentNode);
+			}
+			function toggleRename(e) {
+				const childs = e.children || false;
+				if (childs) {
+					for (const child of childs) {
+						child.classList.toggle('d-none');
+						if (child.tagName == "INPUT") {
+							child.focus();
+							child.select();
+						}
+					}
+				}
+			}
+
+			function nameConfirm(e) {
+				e.preventDefault();
+				if (e.keyCode === 13) {
+					rename(e.target);
+				} else if (e.keyCode === 27) {
+					toggleRename(e.target.parentNode);
+				}
+			}
             function init(desktopItems) {
                 for (const item of desktopItems) {
                     if (!item.ondesktop) { continue; }
                     CreateDesktopIcon(item)
-                }
-            }
+				}
+				createDropTarget(defaultContainer);
+				shared.createDropTarget = createDropTarget;
+				shared.createDragable = createDragable;
+			}
+			function createDropTarget(e) {
+				e.ondragover = onDragOver;
+				e.ondrop = onDrop;
+			}
+			function onDrop(ev) {
+				let e = ev.target;
+				ev.preventDefault();
+				ev.stopPropagation();
+				if (e.tagName == "IMG") {
+					e = e.parentNode.parentNode;
+				}
+				const data = e.dataset,
+					{ container, type, itemId = false, id = false } = data,
+					targetId = itemId || id || false,
+					sourceId = ev.dataTransfer.getData("text") || false;
+				if (!targetId || !sourceId || targetId == sourceId) {
+					return;
+				}
+				const item = components[datasource].copyItem(targetId, sourceId, true);
+				if (item) {
+					const sourceIcons = document.body.querySelectorAll(`.de-icon[data-item-id="${sourceId}"]`);
+					if (type == "free") {
+						const targetWin = document.body.querySelector(`.content[data-id="${id}"]`)
+							max = sourceIcons.length;
+						if (targetWin) {
+							CreateDesktopIcon(item, targetWin, container == -1);
+						}
+					}
+					for (const icon of sourceIcons) {
+						icon.remove();
+					}
+				}
+			}
+			function onDragOver(ev) {
+				ev.preventDefault();
+			}
             function createMenu(e, ev) {
                 const{id,container,type,itemId}=e.dataset,
                       ds=components[datasource],
@@ -520,6 +597,32 @@ const componentsData = {
 				}
 				clipboard.clear()
 			}
+			function createNew(e) {
+				const [id, container, type] = e.dataset.extra.split('/'),
+					time = Math.round(+new Date() / 1000),
+					icons = {
+						dir: "folder",
+						html: "file"
+					};
+					
+
+				const newItem = {
+					name: "新建文件夹",
+					id: guid(),
+					description: "This is a new folder",
+					icon: icons[type],
+					type: type,
+					readonly: false,
+					onstartmenu: false,
+					ondesktop: id == -1,
+					createtime: time,
+					lastmodify:1503812702,
+				}
+
+				if (components[datasource].add([newItem], id)) {
+					CreateDesktopIcon(newItem, getContainer(container), true);
+				}
+			}
 			function deleteIcon(id) {
 				const icons = document.body.querySelectorAll(`.de-icon[data-item-id="${id}"]`);
 				for (const icon of icons) {
@@ -567,6 +670,9 @@ const componentsData = {
 				},
 				remove(e) {
 					remove(getParent(e));
+				},
+				createNew(e, ev) {
+					createNew(e);
 				},
 				
                 
@@ -653,7 +759,7 @@ const componentsData = {
 
 			function add(items, to) {
 				let target = to == -1 ? vfs : searchInVfs(vfs.child, to);
-				console.log(target)
+				
 				if (!target) {
 					return false;
 				}
