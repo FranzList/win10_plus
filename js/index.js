@@ -27,7 +27,7 @@ function VirtualOS() {
         guid,
         getPath,
         // isEmpty,
-        // objClone,
+        objClone,
         blurable
     }
     function sec2Date (tstamp){
@@ -38,6 +38,9 @@ function VirtualOS() {
 			(d.getDay()+1+"").padStart(2, "0") +".  "+
 			getFormattedTime(d)
 		);
+    }
+    function objClone(obj) {
+		return JSON.parse(JSON.stringify(obj));
 	}
 
 	function getFormattedTime(d) {

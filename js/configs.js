@@ -97,7 +97,16 @@ const componentsData = {
 				task: 'taskManager',
 			}          
 
-        }
+		},
+		virtualClipboard: {
+			id: "vrtlclpbrd",
+			name: "Clipboard",
+			description: "Responsable for register item/items in virtual clipboard",
+			icon: "",
+			maxProc: 1,
+		},
+
+		
     },
     // `<div class="desktop-details">
     //                         <h1>背景</h1>
@@ -370,36 +379,47 @@ const componentsData = {
                 }
             }
             function createMenu(e, ev) {
-                const{id,container,type}=e.dataset,
+                const{id,container,type,itemId}=e.dataset,
                       ds=components[datasource],
-                      menu=components[relationship.menu];
-
+					  menu=components[relationship.menu],
+					  clipboard=components[relationship.clipboard],
+					  targetID=itemId||id;
+					  	
                 let list;
                
                 if(type=='free'){
                     //桌面
                     
                     list=[
-                        ["新建文件夹", cName, "createNew", [id, container, 'dir']],
-						["新建文件", cName, "createNew", [id, container, 'html']],
-						["粘贴", cName, "paste", [id, container, type]],
-                        ["Terminal", "terminal", "launch", [id]],
-						["个人设置", display, "launch", [id]],
-                    ]
+                        ["新建文件夹", cName, "createNew", [targetID, container, 'dir']],
+						["新建文件", cName, "createNew", [targetID, container, 'html']],
+						["粘贴", cName, "paste", [targetID, container, type]],
+                        ["Terminal", "terminal", "launch", [targetID]],
+						["个人设置", display, "launch", [targetID]],
+					]
+					
+					if(clipboard.getItems().length<=0){
+						list.splice(2,1)
+					}
                 }
                else if(type=='icon'){
-                    //文件
+					//文件
+					
                     list=[
-                        ["打开",datasource , "execute", [id]],
-						["复制", relationship.clipboard, "addItems", ['fs', id, 'false']],
-						["剪切", relationship.clipboard, "addItems", ['fs', id, 'true']],
-						["重命名", cName, "toggleRename", [id]],
-						["删除", cName, "remove", [id]],
-						["属性", cName, "properties", [id]],
-                    ]
+                        ["打开",datasource , "execute", [targetID]],
+						["复制", relationship.clipboard, "addItems", ['fs', targetID, 'false']],
+						["剪切", relationship.clipboard, "addItems", ['fs', targetID, 'true']],
+						["粘贴", cName, "paste", [targetID,type]],
+						["重命名", cName, "toggleRename", [targetID]],
+						["删除", cName, "remove", [targetID]],
+						["属性", cName, "properties", [targetID]],
+					]
+					if(clipboard.getItems().length<=0){
+						list.splice(3,1)
+					}
                 }
                 if(list){
-                    menu.create(ev,list,id)
+                    menu.create(ev,list,targetID)
                 }
 			}
 			function createNewWindow() {
@@ -450,6 +470,56 @@ const componentsData = {
 					}
 				}
 			}
+			function getContainer(id) {
+				
+				const win = components[window].getWindow(id);
+				if (!win) {
+					return defaultContainer;
+				}
+				return win.body;
+			}
+			function paste(e) {
+				const [targetId, container, targetType] = e.dataset.extra.split('/'),
+					time = Math.round(+new Date() / 1000),
+					icons = {
+						dir: "folder",
+						html: "file"
+					},
+					ds = components[datasource],			
+					clipboard = components[relationship.clipboard],
+					items = clipboard.getItems();
+				let containerDOM,
+					newWindow;
+				if (!clipboard.getItems()) {
+					return console.log("Clipboard is empty");
+				}
+				if (targetType == "free") {
+					containerDOM = getContainer(container)
+					if (!containerDOM) {
+						return console.log("Container not exist!");
+					}
+					newWindow = targetId == -1 ? true : false;
+					
+				}
+
+				for (let [sourceType, itemId, remove] of items) {
+					if (sourceType == "fs") {
+						remove = remove == "true";
+
+						const item = ds.copyItem(targetId, itemId, remove);
+						
+						if (item && targetType == "free") {
+							
+							CreateDesktopIcon(item, containerDOM, newWindow);
+							if (remove) {
+								
+								deleteIcon(itemId);
+							}
+						}
+					}
+				}
+				clipboard.clear()
+			}
            
 
 
@@ -469,6 +539,9 @@ const componentsData = {
 				close(win) {
 					close(win);
 				},
+				paste(e, ev) {
+					paste(e);
+				},
                 
             }
         },
@@ -477,7 +550,8 @@ const componentsData = {
 				relationship = settings.relationship;
 			let vfs;
 
-			if (localStorage.getItem('vfs')) {
+			if (localStorage.getItem('2323')) {
+				
 				vfs = JSON.parse(localStorage.getItem('vfs'));
 				init();
 			} else {
@@ -552,6 +626,7 @@ const componentsData = {
 
 			function add(items, to) {
 				let target = to == -1 ? vfs : searchInVfs(vfs.child, to);
+				console.log(target)
 				if (!target) {
 					return false;
 				}
@@ -559,7 +634,7 @@ const componentsData = {
 					target.child = [];
 				}
 				target.child.push(...items);
-				save();
+				//save();
 				return true;
 			}
 
@@ -599,6 +674,7 @@ const componentsData = {
 			}
 
 			function copyItem(targetId, sourceId, removeItem = false) {
+				
 				const sourceItem = searchInVfs(vfs.child, sourceId);
 				if (!sourceItem) { return null; }
 				const itemCopy = objClone(sourceItem);
@@ -607,6 +683,7 @@ const componentsData = {
 				}
 				prepareItem(itemCopy, removeItem);
 				if (!add([itemCopy], targetId)) {
+					
 					return false;
 				};
 				if (removeItem) {
@@ -666,7 +743,8 @@ const componentsData = {
 					return deleteItem(vfs.child, id)
 				},
 				save() {
-					return save();// save into localstorage
+
+					return save();
 				}
 			}
 		},
@@ -1168,7 +1246,9 @@ const componentsData = {
 
 
 			function addItems(e) {
+
 				clipboard.push(...[e.dataset.extra.split("/")]);
+				
 				return true;
 			}
 
@@ -1227,7 +1307,7 @@ const componentsData = {
 						const header = template.runningTaskHeader();
 						let body = [];
 						for (const key in objList) {
-							console.log(objList);
+							
 							const id = key,
 								o = objList[key];
 							body.push(template.taskLine({
