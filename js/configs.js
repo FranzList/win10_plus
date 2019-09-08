@@ -313,16 +313,39 @@ const componentsData = {
         },
         desktopManager(settings, shared = false) {
             const defaultContainer=document.querySelector(settings.container),
-                {components,getPath}=shared,
+                {components,getPath,assoc,sec2Date}=shared,
                 cName=settings.constructorName,
                 relationship=settings.relationship,
                 {datasource,window,display}=relationship,
                 template={
                     tooltip(item){
                         return `ID: ${item.id}&#013Description: ${item.description}&#013;`;
-                    }
+					},
+					propertiesWrapper(p) {
+						const prop = p.map( e => template.propertiesLine(e) ).join('');
+						return `<div class="file-info">${prop}</div>`
+					},
+					propertiesLine(e) {
+						const padding = "".padStart(5, "&nbsp;");
+						return `<p><b>${e[0]}:</b> ${padding}</p><p>${e[1]}</p>`
+					},
+					properties(item) {
+						const info = [
+							["ID", item.id],
+							["Type", item.type],
+							["Open with", assoc[item.type] || "Unknown"],
+							["Status", item.readonly ? "readonly" : "writeable"]
+						];
+						if (item.child && item.child.length) {
+							info.push(["Content", `${item.child.length} file(s) or folder(s)`]);
+						}
+						info.push(["Created at", sec2Date(item.createtime)]);
+						info.push(["Modified at", sec2Date(item.lastmodify)]);
+
+						return template.propertiesWrapper(info);
+					}
                 };
-            
+            let windows=[];
             //创建桌面图标
             function CreateDesktopIcon(item,targetContainer=defaultContainer,newWindow=true) {
                 targetContainer.insertAdjacentHTML('beforeend', `<div class="de-icon no-select" data-item-id="${item.id}">
@@ -378,7 +401,19 @@ const componentsData = {
                 if(list){
                     menu.create(ev,list,id)
                 }
-            }
+			}
+			function createNewWindow() {
+				const options = {
+					data: false,
+					appClass: settings.windowClass,
+					title: settings.name,
+					source: settings.constructorName,
+					windowSize: settings.windowSize,
+					randomPosition: settings.randomPosition,
+					icon: settings.icon,
+				};
+				return components[window].register(options);
+			}
             function start(e, ev) {
 				
 				const ds = components[datasource],
@@ -406,6 +441,15 @@ const componentsData = {
 				windows.push(win);
 				return win;
 			}
+			function close(win) {
+				const len = windows.length;
+				let i = 0;
+				for (; i < len; i++) {
+					if (windows[i].id == win.id) {
+						return windows.splice(i, 1);
+					}
+				}
+			}
            
 
 
@@ -421,6 +465,9 @@ const componentsData = {
                 },
                 properties(e, ev) {
 					start(e, ev);
+				},
+				close(win) {
+					close(win);
 				},
                 
             }
@@ -807,7 +854,8 @@ const componentsData = {
             if (!win) { return console.log('Window not found'); }
             if (shared.taskPanel) {
                 shared.taskPanel.removeFromList(win);
-            }
+			}
+			console.log(win)
             components[win.source].close(win);
             win.dom.remove();
            // task.close(windows[id]);

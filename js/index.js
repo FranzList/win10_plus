@@ -23,13 +23,30 @@ function VirtualOS() {
         assoc: fileTypeAssoc,
         // getNamedDate,
         // getFormattedTime,
-        // sec2Date,
+        sec2Date,
         guid,
         getPath,
         // isEmpty,
         // objClone,
         blurable
     }
+    function sec2Date (tstamp){
+		const d = new Date(tstamp*1000);
+		return (
+			d.getFullYear()+". "+
+			(d.getMonth()+1+"").padStart(2, "0") +". "+
+			(d.getDay()+1+"").padStart(2, "0") +".  "+
+			getFormattedTime(d)
+		);
+	}
+
+	function getFormattedTime(d) {
+		return (
+			(d.getHours()+"").padStart(2, "0") + ":" +
+			(d.getMinutes()+"").padStart(2, "0") + ":" +
+			(d.getSeconds()+"").padStart(2, "0")
+		);
+	}
 
     loadScript('script', 'configs', () => {
        // 加载完数据都删除掉 只需加载一次就好
