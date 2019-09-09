@@ -33,27 +33,38 @@
     <div id="desktop">
         
         <div class="bg-img desktop-container" data-contextmenu="desktopManager._createMenu" data-container="-1" data-id="-1" data-type="free">
-          
+          <div class="de-icon" data-click="taskManager.launch">
+            <div class="DesktopIconImgBox" style="margin-left: 15px" data-type="icon" data-contextmenu="desktopManager._createMenu">
+                <img src="./assets/desktop/taskmanager.ico" />
+            </div>
+            <div class="de-text-box icon-text" style="margin-left: 15px" >
+                <input class="d-none" type="text" maxlength="24" value=任务管理器 />
+                <span >任务管理器</span>
+            </div>
+          </div>
         </div>
         
     </div>
     <div id="footer">
        <div class="task-container">
+           <!-- 开始菜单按钮 -->
            <div class="startbtn" data-click="startMenuManager.toggle" data-type='startmenu'>
               <div></div> 
-            </div>
+           </div>
+           <!-- 任务栏 -->
+           <div class="task-win-container">
+               <div class="task-win-group"></div>
+           </div>
+
+           <!-- 时间 -->
+           <time id="clock" class="btn-task btn-text"> 00:00:00 </time>
        </div> 
     </div>
    </section> 
    <img id='sd' src="./assets/background/th.jpg" height="100" width="100">
    <script src="./js/index.js">
    </script>
-   <script>
    
-
-   
-
-   </script>
    
 </body>
 </html>

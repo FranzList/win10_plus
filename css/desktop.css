@@ -90,16 +90,19 @@
 
 /* window--header */
 .window{
-   position: absolute;
+  
    left: 100px;
    top: 200px;
+}
+.window *{
+   font-size: 15px;
 }
 .window .header{
    display: flex;
    align-items: center;
    flex-direction: row;
    background: rgb(242, 242, 242);
-   width: 800px;
+   width: 600px;
    height: 30px;
 }
    .title{flex:1;}
@@ -139,7 +142,7 @@
 }
 .desktop-details .img-container{
    margin-top: 10px;
-   width: 425px;
+   width: 445px;
    height: 80px;
 }
 .desktop-details .img-container>img{

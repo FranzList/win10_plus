@@ -1,7 +1,43 @@
 .task-container{
     position: relative;
     height: 40px;
+    display: flex;
+    flex-direction: row;
 }
+.task-win-container{
+    flex: 1;
+}
+.task-win-group{
+    display: flex;
+    height: 100%;
+    align-items: center;
+}
+.task-win-group>figure{
+    
+    height: 100%;
+    padding: 5px;
+}
+.task-win-group .btn-task:hover{
+    cursor:default;
+    background: rgb(50, 50, 50)
+}
+.task-win-group .mini-icon{
+    display: inline-block;
+
+}
+.task-win-group .d-md-iblock{
+    display: inline-block;
+    position: relative;
+    top: -10px;
+}
+.task-win-group div[data-sub-group]{
+    position: absolute;
+    bottom: 40px;
+}
+.task-win-group .btn-task{
+    background: rgb(7,13,19)
+}
+
     .start-menu{
         display: none;
         flex-direction: row;
@@ -14,7 +50,9 @@
     .sub-item-list ul{
         overflow: hidden;
         padding-left: 10px;
-        background: rgb(68, 68, 68)
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        background: rgba(68, 68, 68, 0.5);
     }
     .sub-item-list>ul::before{
         content: 'welcome~';
@@ -26,7 +64,8 @@
         font-size: 20px;
         line-height: 40px;
         position: absolute;
-        background: rgb(68, 68, 68);
+        backdrop-filter: blur(20px);
+        background: rgb(68, 68, 68,0.5);
         padding-left: 10px;
     }
     .sub-item-list li{
@@ -95,5 +134,22 @@
      .block1,.block2{
          border-bottom: 2px solid black;
      }
-  
+    .btn-text{
+        color: white;
+        font-size: 13px;
+    }
+
+.system-manager .content{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 580px;
+}
+.system-manager .content .row{
+    display: flex;
+    height: 25px;
+}
+.system-manager .content .row>div{
+   flex: 1;
+}
 

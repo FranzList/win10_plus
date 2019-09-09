@@ -66,6 +66,7 @@ function VirtualOS() {
             shared.components[key] = new (new Function(...parma, 'return component(options,shared)'))(component, options, shared)
 
         }
+        
        removeScript('configs','script')
 
     })
@@ -90,7 +91,7 @@ function VirtualOS() {
         
         if (action.indexOf(".") > -1) {
             //创建右键菜单。。。
-            
+           
             callComponent(e,action,ev)
         }
 
@@ -122,7 +123,7 @@ function VirtualOS() {
     }
     function callComponent(element = null, path = null, events = null) {
         const methods = path.split('.')
-        
+       
          shared.components[methods[0]][methods[1]](element,events)
     }
     function getScriptPath(filename, filetype) {
