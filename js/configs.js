@@ -387,28 +387,30 @@ const componentsData = {
 			}
 			function inputBlur(e) {
 				e.preventDefault();
+				
 				toggleRename(e.target.parentNode);
 			}
-			function toggleRename(e) {
-				const childs = e.children || false;
-				if (childs) {
-					for (const child of childs) {
-						child.classList.toggle('d-none');
-						if (child.tagName == "INPUT") {
-							child.focus();
-							child.select();
-						}
-					}
-				}
-			}
+			
 
 			function nameConfirm(e) {
 				e.preventDefault();
 				if (e.keyCode === 13) {
+					
 					rename(e.target);
-				} else if (e.keyCode === 27) {
-					toggleRename(e.target.parentNode);
-				}
+				} 
+			}
+
+			function rename(e){
+				const id=e.parentNode.dataset.id;
+				if(!id){return console.log('no id~')}
+				const item=components[datasource].get(id),
+					  input=e.parentNode.querySelector('input'),
+					  span=e.parentNode.querySelector('span');
+				if(!item||!input){return console.log('no item or input')}
+				item.name=input.value;
+				span.textContent=item.name;
+				input.blur();
+				//item.lastmodify
 			}
             function init(desktopItems) {
                 for (const item of desktopItems) {
@@ -637,6 +639,20 @@ const componentsData = {
 					deleteIcon(id);
 				}
 			}
+			function toggleRename(e){
+				const childs=e.children||false;
+				if(childs){
+					for (const child of childs) {
+						child.classList.toggle('d-none');
+						
+						if(child.tagName=='INPUT'){
+							
+							child.focus();
+							child.select();
+						}
+					}
+				}
+			}
 			function getParent(e) {
 				
 				const parent = e.parentNode,
@@ -644,7 +660,6 @@ const componentsData = {
 				if (!id) {
 					return console.log("Id not exist on parent elem!");
 				}
-				console.log(parent)
 				return document.querySelector(`div.icon-text[data-id="${id}"]`);
 			}
 
@@ -673,6 +688,9 @@ const componentsData = {
 				},
 				createNew(e, ev) {
 					createNew(e);
+				},
+				toggleRename(e) {
+					toggleRename(getParent(e));
 				},
 				
                 

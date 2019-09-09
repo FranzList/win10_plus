@@ -23,6 +23,9 @@
    
 
 }
+   .d-none{
+      display: none !important;
+   }
    .de-icon{
       margin-top: 20px;
       margin-left: 20px;
@@ -36,13 +39,18 @@
       height: 50px;
    }
    .de-text-box>input{
-      display: none;
+      position: absolute;
+      top: 52px;
+      left: 0px;
+      color: white;
+      background: rgba(0, 0,0, 0.1);
       border: none;
       outline: none;
       width: 100%;
       height: 1em;
       line-height: 1em;
       font-size: 13px;
+      text-align: center;
    }
    .de-text-box>span{
       color: white;
