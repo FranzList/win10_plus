@@ -121,6 +121,16 @@ const componentsData = {
 				window: 'windowManager',
 			}
 		},
+		clockManager: {
+			id: "clkmngr",
+			name: "System Clock",
+			description: "Responsable for keep time realated parts like right side clock",
+			icon: "",
+			taskbar: true,
+			maxProc: 1,
+			showUI: true,
+			placeholder: "time#clock",
+		},
 
 
 	},
@@ -373,8 +383,12 @@ const componentsData = {
 			let windows = [];
 			//创建桌面图标
 			function CreateDesktopIcon(item, targetContainer = defaultContainer, newWindow = true) {
+				let methods=item.type=='github'?'display.launch':'fileSystem.execute';
+				
+				
+				
 				targetContainer.insertAdjacentHTML('afterbegin', `<div class="de-icon no-select" data-item-id="${item.id}">
-					<a title="${template.tooltip(item)}" data-click="${datasource}.execute" data-contextmenu="${cName}._createMenu" data-id="${item.id}" data-container="${targetContainer.dataset.id}" data-new="${newWindow}" data-type="icon">
+					<a title="${template.tooltip(item)}" data-click="${methods}" data-contextmenu="${cName}._createMenu" data-id="${item.id}" data-container="${targetContainer.dataset.id}" data-new="${newWindow}" data-type="icon">
 						<div class="DesktopIconImgBox">
 							<img src="${getPath('desktop', item.icon)}" />
 						</div>
@@ -873,8 +887,10 @@ const componentsData = {
 					alert(item.text);
 				} else if (!app || !app.open) {
 					return console.log("Not exist associated application!");
+				}else{
+					app.open(e, ev);
 				}
-				app.open(e, ev);
+				
 			}
 
 			function execute(e, ev) {
@@ -912,6 +928,51 @@ const componentsData = {
 				save() {
 
 					return save();
+				}
+			}
+		},
+		clockManager(settings, shared = false) {
+			const placeholder = document.body.querySelector(settings.placeholder) || null;
+			let timerId;
+			if (settings.showUI) {
+				updateClock(new Date())
+				if (placeholder) {
+					placeholder.dataset.timezone = getTimeZone();
+					timerId =  setInterval( () => {
+						updateClock(new Date());
+					}, 1000);
+				}
+			}
+
+			function updateClock(time) {
+				const clock =getFormattedTime(time);
+				placeholder.textContent = clock;
+				placeholder.dataset.time = clock;
+				placeholder.dataset.date = getNamedDate(time);
+			}
+
+			function getTimeZone() {
+				const time = new Date(),
+					timeZone = Math.round(time.getTimezoneOffset() / 60);
+				return timeZone > 0 ? "-" + timeZone : "+" + -timeZone;
+			}
+			function getNamedDate(d) {
+				const days = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"],
+					months = ["1月","2月","3月","4月","5月","6月","7月","8月", "9月", "10月", "11一月", "12月"];
+				return `${d.getFullYear()}年 ${months[d.getMonth()]} ${d.getDate()} (${days[d.getDay()]})`
+			}
+			function getFormattedTime(d) {
+				return (
+					(d.getHours()+"").padStart(2, "0") + ":" +
+					(d.getMinutes()+"").padStart(2, "0") + ":" +
+					(d.getSeconds()+"").padStart(2, "0")
+				);
+			}
+			return {
+				remove() {
+					if (timerId) {
+						clearInterval(timerId);
+					}
 				}
 			}
 		},
@@ -1110,7 +1171,7 @@ const componentsData = {
 			function unfocus(id) {
 				if (windows[id]) {
 					windows[id].dom.style.zIndex = normalZ;
-					//components[taskMName].unfocus(windows[id]);
+					components[taskMName].unfocus(windows[id]);
 				}
 				focusedId = null;
 			}
@@ -1128,7 +1189,7 @@ const componentsData = {
 					}
 					windows[id].dom.style.zIndex = focusedZ;
 					focusedId = id;
-					//  components[taskMName].focus(windows[id]);
+					components[taskMName].focus(windows[id]);
 				}
 			}
 
@@ -1169,6 +1230,7 @@ const componentsData = {
                         </div>
                         
 						<div class="sub-item-list">
+							<div class="ul-before">Welcome~</div>
 							<ul >${icons}${icons}${icons}</ul>
                         </div>
                         

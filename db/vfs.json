@@ -2,16 +2,17 @@
 {
    "child": [
   		{
-			"name":"我的电脑",
+			"name":"Github",
 			"id":"qcqXWjbeQUPZtxfeI5rN6yWsIQbzYRXo",
 			"description":"Here for my resumes",
-			"icon":"mycpu",
+			"icon":"github",
 			"readonly":false,
 			"ondesktop":true,
 			"onstartmenu":true,
 			"createtime":1503812702,
 			"lastmodify":1503812702,
-			"type":"dir",
+			"type":"url",
+			"url":"https://github.com/FranzList/win10plus",
 			"child":[
                 {
 				   "name":"Resume",
@@ -52,16 +53,16 @@
 			]
 		},
 	    {
-			"name":"回收站",
+			"name":"桌面设置",
 			"id":"zxwLNUWqJS3QTJCmviKhcvvXm1ACdYkU",
 			"description":"What i want in future? Check this folder!",
-			"icon":"racycle",
+			"icon":"settings",
 			"readonly":false,
 			"ondesktop":true,
 			"onstartmenu":true,
 			"createtime":1503812702,
 			"lastmodify":1503812702,
-			"type":"dir",
+			"type":"github",
 			"child":[
 				{
 				   "name":"My goal!",
@@ -199,7 +200,7 @@
             "description":"I stored here my references",
             "icon":"folder",
             "readonly":false,
-            "ondesktop":true,
+            "ondesktop":false,
             "onstartmenu":false,
             "createtime":1503812702,
             "lastmodify":1503812702,
@@ -257,10 +258,10 @@
             ]
         },
         {
-			"name":"Terminal Guides",
+			"name":"回收站",
 			"id":"BadBmHrbSujgTAqHEJXy87BtCCzvNXL1",
 			"description":"Guide collection",
-			"icon":"folder",
+			"icon":"recycle",
 			"readonly":false,
 			"ondesktop":true,
 			"onstartmenu":false,
@@ -398,143 +399,17 @@
 			]
         },
 		{
-			"name":"Tutorials & Links",
+			"name":"我的电脑",
 			"id":"BtdBmHrbSujgTAqHEJXy87BtCCzvNXL1",
 			"description":"Guide collection",
-			"icon":"folder",
+			"icon":"mycpu",
 			"readonly":false,
 			"ondesktop":true,
 			"onstartmenu":false,
 			"createtime":1503812702,
 			"lastmodify":1503812702,
-			"type":"dir",
-			"child":[
-                {
-                    "name":"LAMP",
-                    "id":"Z401HcNaYnlBEng0LJ2Z9MkpsCdlV4i1",
-                    "description":"Few tip and note for lamp",
-                    "icon":"folder",
-                    "readonly":false,
-                    "onstartmenu":true,
-                    "createtime":1503812702,
-                    "lastmodify":1503812702,
-                    "type":"dir",
-                    "child":[
-                        {
-                           "name":".htaccess & speed",
-                           "id":"nz190I212C5Ea8cY2OTSrH4af1xmDukh",
-                           "description":"How to improve the page loading speed with .htaccess or make url rewrite for single page app",
-                           "icon":"file",
-                           "type":"html",
-                           "createtime":1503812702,
-                           "lastmodify":1503812702,
-                           "readonly":false,
-                           "onstartmenu":true,
-                           "url":"htaccess_optimization.html"
-                        }
-                    ]
-                },
-                {
-                    "name":"Tools",
-                    "id":"Z401HcNaYnlBEjg0LJ2Z9MkpsCdlV4iq",
-                    "description":"Optimizations, tweaks and tools for web development",
-                    "icon":"folder",
-                    "readonly":false,
-                    "onstartmenu":true,
-                    "createtime":1503812702,
-                    "lastmodify":1503812702,
-                    "type":"dir",
-                    "child":[
-                        {
-                           "name":"Online tools",
-                           "id":"nz190I24mC5Ea8cYAOTSrH4af1xmDukh",
-                           "description":"Online tools like minifier, beautifier, editors, converters and so many else",
-                           "icon":"file",
-                           "type":"html",
-                           "createtime":1503812702,
-                           "lastmodify":1503812702,
-                           "readonly":false,
-                           "onstartmenu":true,
-                           "url":"online_tools.html"
-                        }
-                    ]
-                },
-                {
-					"name":"PHP",
-					"id":"Z40DHcNmYnlBEjg0LJ2Z9MkpsCdlV4iq",
-					"description":"My php collection",
-					"icon":"folder",
-					"readonly":false,
-					"onstartmenu":true,
-					"createtime":1503812702,
-					"lastmodify":1503812702,
-					"type":"dir",
-					"child":[
-						{
-						   "name":"CURL & Mailerlite",
-						   "id":"nzIP0I24mC5Ea8cYAOTSrH4af1xmDukh",
-						   "description":"CURL  put, post, get, delete with mailerlite groups",
-						   "icon":"file",
-						   "type":"html",
-						   "createtime":1503812702,
-						   "lastmodify":1503812702,
-						   "readonly":false,
-						   "onstartmenu":true,
-						   "url":"php_1_curl.html"
-						}
-					]
-				},
-				{
-					"name":"CSS3",
-					"id":"BTXSoZc9yltdDZmGXEjJRjBlCREUTaDA",
-					"description":"My CSS collection",
-					"icon":"folder",
-					"readonly":false,
-					"onstartmenu":true,
-					"createtime":1503812702,
-					"lastmodify":1503812702,
-					"type":"dir",
-					"child":[
-						{
-						   "name":"Helpful links",
-						   "id":"rTlUxcpPwcMccdxMAtwiBackgOPMF2gp",
-						   "description":"CSS shapes, pseudo element etc",
-						   "icon":"file",
-						   "type":"html",
-						   "createtime":1503812702,
-						   "lastmodify":1503812702,
-						   "readonly":false,
-						   "onstartmenu":true,
-						   "url":"css.html"
-						}
-					]
-				},
-				{
-					"name":"JS",
-					"id":"dhX9PZd9PKxp1T9gexaCUcdPR4hHDbV5",
-					"description":"My javascript collection",
-					"icon":"folder",
-					"readonly":false,
-					"onstartmenu":true,
-					"createtime":1503812702,
-					"lastmodify":1503812702,
-					"type":"dir",
-					"child":[
-						{
-						   "name":"Few links",
-						   "id":"R7p2kJZs2cmOm8XGVmvcQ0Gm5szQGT3T",
-						   "description":"Usefull functions",
-						   "icon":"file",
-						   "type":"html",
-						   "createtime":1503812702,
-						   "lastmodify":1503812702,
-						   "readonly":false,
-						   "onstartmenu":true,
-						   "url":"javascript.html"
-						}
-					]
-				}
-			]
+			"type":"dir"
+			
 		},
         {
             "name":"Changelog",

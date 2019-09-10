@@ -54,28 +54,32 @@
         -webkit-backdrop-filter: blur(20px);
         background: rgba(68, 68, 68, 0.5);
     }
-    .sub-item-list>ul::before{
-        content: 'welcome~';
-        top: -40px;
-        left: 0;
-        width: 659px;
-        height: 40px;
-        color: white;
-        font-size: 20px;
-        line-height: 40px;
-        position: absolute;
-        backdrop-filter: blur(20px);
-        background: rgb(68, 68, 68,0.5);
+    .sub-item-list .ul-before{
         padding-left: 10px;
+        font-size:15px;
+        line-height: 40px;
+        color: white;
+        position: absolute;
+        top: -40px;
+        width: 669px;
+        height: 40px;
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        background: rgba(68, 68, 68, 0.5);
     }
+    
     .sub-item-list li{
        display: flex;
+       align-items: center;
         width: 250px;
         height: 35px;
         padding: 1.5px;
         padding-top: 20px;
         transition: padding-top 0.2s ease;
         
+    }
+    .sub-item-list span{
+        cursor: default;
     }
     .sub-item-list li.show{
         padding-top: 0px;
@@ -151,5 +155,33 @@
 }
 .system-manager .content .row>div{
    flex: 1;
+}
+
+
+#clock{
+    line-height: 40px;
+    cursor: default;
+    
+    
+}
+#clock:hover{
+    background: rgb(68, 68, 68)
+}
+
+#clock:before{
+    
+    transition: opacity 0.2s ease;
+}
+#clock:hover:before{
+    
+    background: white;
+    line-height: 30px;
+    right: 0;
+    color: black;
+    
+    height: 30px;
+    position: absolute;
+    bottom: 40px;
+    content: attr(data-date)
 }
 
