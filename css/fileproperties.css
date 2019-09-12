@@ -1,0 +1,13 @@
+.file-properties .header{
+    width: 400px;
+}
+.file-properties .content{
+    width: 400px;
+   
+    padding: 10px;
+    background: lightgray;
+}
+.file-properties .file-info{
+    background: white;
+    
+}

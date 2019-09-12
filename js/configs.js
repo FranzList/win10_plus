@@ -357,8 +357,11 @@ const componentsData = {
 						return `ID: ${item.id}&#013Description: ${item.description}&#013;`;
 					},
 					propertiesWrapper(p) {
+						let lis;
 						const prop = p.map(e => template.propertiesLine(e)).join('');
-						return `<div class="file-info">${prop}</div>`
+						return `<div class="file-info">
+						${prop}
+						</div>`
 					},
 					propertiesLine(e) {
 						const padding = "".padStart(5, "&nbsp;");
@@ -385,7 +388,9 @@ const componentsData = {
 			function CreateDesktopIcon(item, targetContainer = defaultContainer, newWindow = true) {
 				let methods=item.type=='github'?'display.launch':'fileSystem.execute';
 				
-				
+				if(targetContainer.dataset.itemId=="BadBmHrbSujgTAqHEJXy87BtCCzvNXL1"){
+					methods=''
+				}
 				
 				targetContainer.insertAdjacentHTML('afterbegin', `<div class="de-icon no-select" data-item-id="${item.id}">
 					<a title="${template.tooltip(item)}" data-click="${methods}" data-contextmenu="${cName}._createMenu" data-id="${item.id}" data-container="${targetContainer.dataset.id}" data-new="${newWindow}" data-type="icon">
@@ -502,13 +507,17 @@ const componentsData = {
 					list = [
 						["新建文件夹", cName, "createNew", [targetID, container, 'dir']],
 						["新建文件", cName, "createNew", [targetID, container, 'dir']],
-						["粘贴", cName, "paste", [targetID, container, type]],
-						
+						["粘贴", cName, "paste", [targetID, container, type]],					
 						["个人设置", display, "launch", [targetID]],
 					]
 
 					if (clipboard.getItems().length <= 0) {
 						list.splice(2, 1)
+					}
+					if(targetID.includes('BadBm')){
+						list=[
+							["清空回收站", datasource, "clearAll", [targetID]],
+						]
 					}
 					
 				}
@@ -527,15 +536,26 @@ const componentsData = {
 					if (clipboard.getItems().length <= 0) {
 						list.splice(3, 1)
 					}
-					if(e.title.includes('this is recycle')){
+					
+					if(targetID&&targetID.includes('BadBm')){
 						list = [
 							["打开", datasource, "execute", [targetID]],
-							["清空回收站", datasource, "execute", [targetID]],
+							["清空回收站", datasource, "clearAll", [targetID]],
 							["重命名", cName, "toggleRename", [targetID]],		
 							["属性", cName, "properties", [targetID]],
 						]
 
 					}
+					
+					if(e.parentNode.parentNode.dataset.container!=-1&&e.parentNode.parentNode.dataset.itemId.includes("BadBm")){
+						
+					
+						list = [
+							["删除", cName, "remove", [targetID]],								
+							["属性", cName, "properties", [targetID]],
+						]
+					}
+					
 				}
 				if (list) {
 					menu.create(ev, list, targetID)
@@ -739,7 +759,7 @@ const componentsData = {
 		fileSystem(settings, shared = false) {
 			const { req, components, guid, objClone, assoc } = shared,
 				relationship = settings.relationship;
-			let vfs;
+			let vfs,sd,recycleimg;
 
 			if (localStorage.getItem('2323')) {
 
@@ -773,8 +793,16 @@ const componentsData = {
 				if (startMenuItems.length) {
 					components[relationship.startmenu].init(startMenuItems);
 				}
-
-
+				
+				let recycle=document.querySelectorAll('a')
+				for (const iterator of recycle) {
+					if(iterator.title.indexOf('recycle')>-1){
+						recycleimg=iterator.querySelector('img');
+					}
+					
+				}
+				sd=vfs.child.filter(child=>(child.id=="BadBmHrbSujgTAqHEJXy87BtCCzvNXL1"))	
+				updateRecycleIcon()
 
 			}
 
@@ -799,6 +827,7 @@ const componentsData = {
 			}
 
 			function deleteItem(items, id) {
+				console.log(id)
 				let i, max = items.length;
 				for (i = 0; i < max; i++) {
 					if (items[i].id == id) {
@@ -913,6 +942,40 @@ const componentsData = {
 				}
 				openItem(searchInVfs(vfs.child, id), e, ev);
 			}
+			function updateRecycleIcon(){
+				
+				setInterval(()=>{
+					if(sd[0].child.length){
+						recycleimg.src='assets/desktop/recycle-full.ico'
+					}else{
+						recycleimg.src='assets/desktop/recycle.ico'
+					}
+				},100)
+			}
+			function clearAll(items,e){
+			  
+			  		  		
+				sd[0].child.splice(0,sd[0].child.length)	
+				//save();
+				//更新图标
+				//删除对应dom
+				let contents;
+				contents=document.querySelectorAll('.content')
+				if(contents.length){
+					let keys=Object.keys(contents)
+					for (const key of keys) {
+						if(contents[key].dataset.itemId==e.dataset.extra){
+
+							while(contents[key].firstChild){								
+								contents[key].removeChild(contents[key].firstChild)
+							}														
+						}
+						
+					}									
+				}
+				
+			  
+			}
 
 			return {
 				add(items, to) {
@@ -923,6 +986,9 @@ const componentsData = {
 				},
 				execute(e, ev) {
 					execute(e, ev);
+				},
+				clearAll(e){
+					clearAll(vfs.child,e)
 				},
 				get(id) {
 					return searchInVfs(vfs.child, id);
@@ -1516,7 +1582,7 @@ const componentsData = {
 						const { id, icon, title, subTitle = "", source: group } = options;
 						
 						 let icon2;
-						 console.log(group)
+						
 						switch(group){
 							case "fileExplorer":
 								icon2='folder';
