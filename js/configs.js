@@ -835,7 +835,7 @@ const componentsData = {
 			}
 
 			function deleteItem(items, id) {
-				console.log(id)
+				
 				let i, max = items.length;
 				for (i = 0; i < max; i++) {
 					if (items[i].id == id) {
@@ -929,7 +929,7 @@ const componentsData = {
 				if (!item) {
 					return console.log("File corrupt or not exist anymore!");
 				} else if (item.url && item.type == "url") {
-					console.log(item)
+					
 					window.open(item.url, "mywindow");
 				} else if (item.text && item.type == "alert") {
 					alert(item.text);
@@ -1369,7 +1369,7 @@ const componentsData = {
 			}
 
 			function blurCb(ev) {
-				console.log(ev)
+				
 				//  startMenu.classList.remove('show');
 				//  startMenu.querySelector('.main-item-list').classList.remove('show');
 				//  if(lis.length){
@@ -1599,7 +1599,7 @@ const componentsData = {
 								icon2='settings';
 								break;
 							case "taskManager":
-								icon2='taskManager';
+								icon2='taskmanager';
 								break;
 							case 'desktopManager':
 								icon2='folder'
@@ -1672,7 +1672,7 @@ const componentsData = {
 						if (!d.action) {
 							
 							d.action = template.killBtn(d.id, d.group);
-							console.log(d.action)
+							
 						}
 						let imgslot;
 						if(!d.icon){
