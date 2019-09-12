@@ -408,7 +408,7 @@ const componentsData = {
 				const icon = targetContainer.firstChild;
 				icon.querySelector("input").onblur = inputBlur;
 				icon.querySelector("input").onkeyup = nameConfirm;
-				createDragable(icon);
+				//createDragable(icon);
 
 			}
 			function createDragable(e) {
@@ -516,7 +516,11 @@ const componentsData = {
 					}
 					if(targetID.includes('BadBm')){
 						list=[
+							["复制", relationship.clipboard, "addItems", ['fs', targetID, 'false']],
+							["剪切", relationship.clipboard, "addItems", ['fs', targetID, 'true']],
+							["粘贴", cName, "paste", [targetID, container, type]],
 							["清空回收站", datasource, "clearAll", [targetID]],
+							["属性", cName, "properties", [targetID]],
 						]
 					}
 					
@@ -551,6 +555,8 @@ const componentsData = {
 						
 					
 						list = [
+							["复制", relationship.clipboard, "addItems", ['fs', targetID, 'false']],
+							["剪切", relationship.clipboard, "addItems", ['fs', targetID, 'true']],
 							["删除", cName, "remove", [targetID]],								
 							["属性", cName, "properties", [targetID]],
 						]
