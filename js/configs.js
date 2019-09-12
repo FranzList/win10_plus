@@ -386,10 +386,12 @@ const componentsData = {
 			let windows = [];
 			//创建桌面图标
 			function CreateDesktopIcon(item, targetContainer = defaultContainer, newWindow = true) {
-				let methods=item.type=='github'?'display.launch':'fileSystem.execute';
+				let methods;
 				
 				if(targetContainer.dataset.itemId=="BadBmHrbSujgTAqHEJXy87BtCCzvNXL1"){
 					methods=''
+				}else{
+					methods=item.type=='exe'?'display.launch':'fileSystem.execute';
 				}
 				
 				targetContainer.insertAdjacentHTML('afterbegin', `<div class="de-icon no-select" data-item-id="${item.id}">
