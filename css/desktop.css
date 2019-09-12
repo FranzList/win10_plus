@@ -33,6 +33,7 @@
       position: relative;
       height: 80px;
       width: 80px;
+      cursor: pointer;
    }
    .DesktopIconImgBox img{
       width: 50px;
@@ -115,6 +116,7 @@
    height: 100%;
    width: 80px;
    background: red;
+   cursor: pointer;
 }
 
 .desktop-details>button{
