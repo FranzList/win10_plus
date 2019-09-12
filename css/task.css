@@ -12,6 +12,13 @@
     height: 100%;
     align-items: center;
 }
+.task-win-group .btn-group>div{
+    left: 0;                
+    width: 100%;
+}
+.task-win-group .btn-group{
+   position: relative;
+}
 .task-win-group>figure{
     
     height: 100%;
@@ -144,18 +151,66 @@
     }
 
 .system-manager .content{
+    background: white;
     display: flex;
     flex-direction: column;
     width: 100%;
     height: 580px;
+    padding: 10px;
 }
 .system-manager .content .row{
     display: flex;
+}
+.system-manager .content .row .close{
+   width: 100%;
+   height: 100%;
+   line-height: 1.5em;
+}
+.system-manager .content .row .cell{
+    position: relative;
+    padding: 2px 0;
+}
+.system-manager .content .row .cell>span{
+    vertical-align: bottom;
+}
+.system-manager .content .row:not(:nth-child(1)):hover{
+    cursor: default;
+    background:  rgb(229, 243, 255); 
+}
+.system-manager .content .row:not(:nth-child(1)) .right{
+    position: absolute;
+    right:5px; 
+}
+.system-manager .content .row:not(:nth-child(1)) .info{
+    background: rgb(255, 249, 228)
+    
+}
+.system-manager .content .row:nth-child(1){
+    height: 40px; 
+}
+.system-manager .content .row:nth-child(1) .cell:hover{
+    cursor: default;
+    background:  rgb(229, 243, 255);
+}
+.system-manager .content .row:nth-child(1) .left{
+    bottom: 1px;
+    left: 5px;
+    position: absolute;
+}
+.system-manager .content .row:nth-child(1) .right{
+    bottom: 1px;
+    right: 5px;
+    position: absolute;
+}
+.system-manager .content .row{
     height: 25px;
+    
 }
-.system-manager .content .row>div{
-   flex: 1;
+.system-manager .content .row{
+   border-bottom: 1px solid lightgray;
+   
 }
+
 
 
 #clock{

@@ -1,0 +1,86 @@
+/* window--header */
+.window{
+  
+    left: 100px;
+    top: 200px;
+ }
+ .window *{
+    font-size: 15px;
+ }
+ .window .content{
+     background: white;
+ }
+ .window .header{
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    background: rgb(242, 242, 242);
+    width: 600px;
+    height: 30px;
+ }
+    .title{flex:1;}
+    .minimize,.close,.title{
+    cursor: default;
+    width: 45px;
+    height: 30px;
+    font-size: 15px;
+    line-height: 30px;
+    text-align: center;
+    }
+    .minimize:hover{
+       background: rgb(230, 230, 230)
+    }
+    .close:hover{
+       background: red;
+    }
+ /* window--content */
+ .file-explorer .content{
+    padding: 20px;
+    height: 580px;
+    width: 600px;
+    
+ }
+ .file-explorer .content>div:hover{
+    cursor: default;
+    background: rgb(229, 243, 255);
+ }
+ .file-explorer .content>div{
+     padding: 7px 0;
+     float: left;
+    
+ }
+ .file-explorer .de-icon{
+     margin:0;
+     
+ }
+ .file-explorer span,.window input{
+     color: black;
+ }
+.file-explorer .addressbar{
+   
+    min-height: 30px;
+    height: 30px;
+    background: white;
+    display: flex;
+}
+.file-explorer .addressbar span:hover{
+    background: rgb(229, 243, 255);
+}
+
+
+.file-explorer .addressbar nav{
+    padding: 5px 0;
+    width: 100%;
+    border: 1px solid lightgray;
+}
+.file-explorer .addressbar nav>ul{
+    display: flex;
+    padding-left: 10px;
+}
+.file-explorer .addressbar nav>ul li::after{
+    content: '>' 
+}
+.file-explorer .addressbar nav>ul li:hover{
+    cursor: default;
+    background: rgb(229, 243, 255);
+}

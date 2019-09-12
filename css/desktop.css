@@ -14,7 +14,7 @@
    display: flex;
    flex-direction: column;
    flex-wrap: wrap;
-   
+   align-content: flex-start;
    position: absolute;
    top: 0;
    left: 0;
@@ -88,42 +88,7 @@
    z-index:9;
 }
 
-/* window--header */
-.window{
-  
-   left: 100px;
-   top: 200px;
-}
-.window *{
-   font-size: 15px;
-}
-.window .header{
-   display: flex;
-   align-items: center;
-   flex-direction: row;
-   background: rgb(242, 242, 242);
-   width: 600px;
-   height: 30px;
-}
-   .title{flex:1;}
-   .minimize,.close,.title{
-   cursor: default;
-   width: 45px;
-   height: 30px;
-   font-size: 15px;
-   line-height: 30px;
-   text-align: center;
-   }
-   .minimize:hover{
-      background: rgb(230, 230, 230)
-   }
-   .close:hover{
-      background: red;
-   }
-/* window--content */
-.content{
-   background: white;
-}
+
 .desktop-details{
    padding-left: 20px;
 }

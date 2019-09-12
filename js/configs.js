@@ -5,9 +5,9 @@ const componentsData = {
 		//桌面
 		display: {
 			id: 'display',
-			name: 'Display Settings',
+			name: '桌面设置',
 			description: "Responsable for managing background",
-			icon: "sys_display",
+			icon: "settings",
 			launchbar: true,
 			windowClass: ["desktop-settings", "window-light-blue"],
 			maxProc: 1,
@@ -107,9 +107,9 @@ const componentsData = {
 		},
 		taskManager: {
 			id: "tskmngr",
-			name: "System Taskbar",
+			name: "任务管理器",
 			description: "Responsable for managing the taskbar",
-			icon: "sys_task",
+			icon: "taskmanager",
 			launchbar: true,
 			focusClass: "active",
 			windowClass: ["system-manager", "window-light-blue"],
@@ -501,15 +501,16 @@ const componentsData = {
 
 					list = [
 						["新建文件夹", cName, "createNew", [targetID, container, 'dir']],
-						["新建文件", cName, "createNew", [targetID, container, 'html']],
+						["新建文件", cName, "createNew", [targetID, container, 'dir']],
 						["粘贴", cName, "paste", [targetID, container, type]],
-						["Terminal", "terminal", "launch", [targetID]],
+						
 						["个人设置", display, "launch", [targetID]],
 					]
 
 					if (clipboard.getItems().length <= 0) {
 						list.splice(2, 1)
 					}
+					
 				}
 				else if (type == 'icon') {
 					//文件
@@ -525,6 +526,15 @@ const componentsData = {
 					]
 					if (clipboard.getItems().length <= 0) {
 						list.splice(3, 1)
+					}
+					if(e.title.includes('this is recycle')){
+						list = [
+							["打开", datasource, "execute", [targetID]],
+							["清空回收站", datasource, "execute", [targetID]],
+							["重命名", cName, "toggleRename", [targetID]],		
+							["属性", cName, "properties", [targetID]],
+						]
+
 					}
 				}
 				if (list) {
@@ -815,7 +825,7 @@ const componentsData = {
 					target.child = [];
 				}
 				target.child.push(...items);
-				//save();
+				save();
 				return true;
 			}
 
@@ -882,6 +892,7 @@ const componentsData = {
 				if (!item) {
 					return console.log("File corrupt or not exist anymore!");
 				} else if (item.url && item.type == "url") {
+					console.log(item)
 					window.open(item.url, "mywindow");
 				} else if (item.text && item.type == "alert") {
 					alert(item.text);
@@ -991,11 +1002,11 @@ const componentsData = {
 							afterContent = "",
 							content = ""
 						} = settings;
-
+						
 						return `<div class="container">
                                 <div class="header no-select">
                                     <h4 class="title" data-after-text="${subTitle}">
-                                        ${title}
+                                        ${subTitle||title}
                                     </h4>
                                     <div class="minimize" data-click="${cName}.minimize" data-id="${id}">_</div>
                                     <div class="close" data-click="${cName}.close" data-id="${id}">✖</div>
@@ -1114,12 +1125,13 @@ const componentsData = {
 			}
 
 			function create(options) {
-
+				
 				const id = getNewId(),
 					dom = document.createElement("div")
 				task = components[taskMName];
 				options.id = id;
 				options.status = true;
+				
 				dom.innerHTML = template.window(options);
 				dom.id = "win_" + options.id;
 				dom.dataset.id = options.id;
@@ -1161,7 +1173,7 @@ const componentsData = {
 				if (shared.taskPanel) {
 					shared.taskPanel.removeFromList(win);
 				}
-				console.log(win)
+				
 				components[win.source].close(win);
 				win.dom.remove();
 				task.close(windows[id]);
@@ -1323,17 +1335,17 @@ const componentsData = {
 			const template = {
 				addressbar(item, options) {
 					const { cont, itemId, newWin } = options;
-					return `<div class="addressbar">
-								<span class="home">
-									<img src="./assets/app/home.png">
-								</span>
-								<span class="up">
-									<img src="./assets/app/up.png">
-								</span>
-								<nav>
-									<ul></ul>
-								</nav>
-							</div>`;
+					return `<div class="addressbar">								
+						<span style="padding:5px" class="home">
+							<img width="20" height="20" src="./assets/app/home.png">
+						</span>
+						<span style="padding:5px"  class="up">
+							<img width="20" height="20"  src="./assets/app/up.png">
+						</span>
+						<nav>
+							<ul></ul>
+						</nav>
+						</div>`;
 				}
 			}
 
@@ -1368,7 +1380,7 @@ const componentsData = {
 					appClass: settings.windowClass,
 					windowSize: settings.windowSize,
 					title: settings.name,
-					subTitle: "- " + item.name,
+					subTitle: item.name,
 					source: settings.constructorName,
 					icon: item.icon,
 					randomPosition: settings.randomPosition,
@@ -1423,7 +1435,7 @@ const componentsData = {
 						return console.log("Failed to create new file explorer window!");
 					}
 					win.up = win.dom.querySelector('.up');
-					win.home = win.dom.querySelector('.home');
+					win.home=win.dom.querySelector('.home');		
 					win.nav = win.dom.querySelector('.addressbar nav ul');
 					win.h4 = win.dom.querySelector('.header h4');
 					win.body.dataset.type = "free";
@@ -1494,7 +1506,7 @@ const componentsData = {
 			}
 		},
 		taskManager(settings, shared = false) {
-			const { guid, components, blurable } = shared,
+			const { guid, components, blurable,getPath } = shared,
 				{ launch, window } = settings.relationship,
 				container = document.body.querySelector(settings.container),
 				group = container.querySelector(settings.group),
@@ -1502,29 +1514,53 @@ const componentsData = {
 				template = {
 					taskGroupBtn(options) {
 						const { id, icon, title, subTitle = "", source: group } = options;
+						
+						 let icon2;
+						 console.log(group)
+						switch(group){
+							case "fileExplorer":
+								icon2='folder';
+								break;
+							case "display":
+								icon2='settings';
+								break;
+							case "taskManager":
+								icon2='taskManager';
+								break;
+							case 'desktopManager':
+								icon2='folder'
+								break;
+						}
 						return `<figure class="btn-task btn-group" data-click="${cName}.toggle" data-id="${id}" data-group=${group} data-contextmenu="${cName}.createMenu" title="${title}">
-									<img class="mini-icon" height="30" width="30" src="assets/desktop/taskmanager.ico">
+									<img class="mini-icon" height="30" width="30" src="assets/desktop/${icon2}.ico">
 									<figcaption class="btn-text  d-md-iblock">${title}</figcaption>
 									<div class="d-none" data-sub-group="${group}"></div>
 								</figure>`;
 					},
 					taskBtn(options) {
 						const { id, icon, title, subTitle = "", source: group } = options
-							headerTitle = subTitle.length > 1 ? subTitle.substr(2) : title;
+							//headerTitle = subTitle.length > 1 ? subTitle.substr(2) : title;
+							headerTitle = subTitle||title;
+							
+							
 						return `<figure class="btn-task" data-click="${window}.focus" data-id="${id}" data-group=${group} title="${title} ${subTitle}">
-									<img class="mini-icon width="30" height="30" d-none d-md-iblock" src="assets/desktop/taskmanager.ico">
+									<img class="mini-icon width="30" height="30" d-none d-md-iblock" src="assets/desktop/${icon}.ico">
 									<figcaption class="btn-text d-md-iblock">${headerTitle}</figcaption>
 									<div data-sub-group="${group}"></div>
 								</figure>`;
 					},
 					killBtn(id, group) {
 						return `<div class="close" data-click="${window}.close" data-id="${id}" data-group="${group}">✖</div>`;
+						
 					},
 					runningTaskHeader() {
 						const header = {
-							name: "Task",
+							name: "名称",
 							id: "ID",
-							action: "Kill"
+							action: "结束",
+							cpu:'CPU',
+							memory:'内存',
+							disk:'磁盘'
 						};
 						return template.runningTasks(header);
 					},
@@ -1533,32 +1569,53 @@ const componentsData = {
 					},
 					runningTaskList(objList) {
 						if (!objList) { return ""; }
+						
 						const header = template.runningTaskHeader();
 						let body = [];
 						for (const key in objList) {
-							console.log(objList);
+							
 							const id = key,
 								o = objList[key];
 							body.push(template.taskLine({
-								name: o.title +" "+ (o.subTitle || ""),
+								//name: o.title +" "+ (o.subTitle || ""),
+								name: o.subTitle||o.title,
 								id: id,
 								group: o.source || "",
-								action: template.killBtn(id, o.source)
+								action: template.killBtn(id, o.source),
+								cpu:"0%",
+								memory:'0 MB',
+								disk:"0 MB/秒",
+								icon:o.icon
 							}));
+							
 
 						}
 
 						return header + body.join('');
 					},
 					runningTasks(d) {
+						
 						if (!d.action) {
+							
 							d.action = template.killBtn(d.id, d.group);
+							console.log(d.action)
 						}
+						let imgslot;
+						if(!d.icon){
+							imgslot='';
+						}else{	
+							imgslot=`<img height="20" width="20" src="assets/desktop/${d.icon}.ico">`
+						}
+						
+						
 						return `
-						<div class="row" data-group="${d.group}" data-id="${d.id}">
-							<div class="cell" data-type="name"> ${d.name} </div>
-							<div class="cell" data-type="id" title="${d.id}">${d.id.substr(0, 8)}</div>
-							<div class="cell" data-type="action">${d.action}</div>
+						<div class="row"  data-group="${d.group}" data-id="${d.id}">
+					<div class="cell" style="flex:4;border-right: 1px solid lightgray;" data-type="name">${imgslot}<span class="left">${d.name} </span></div>
+							<div class="cell" style="flex:1;border-right: 1px solid lightgray;"  data-type="id" title="${d.id}"><span class="left">${d.id.substr(0, 7)}</span></div>
+							<div class="cell info" style="flex:1;border-right: 1px solid lightgray;"  data-type="id" ><span class="right">${d.cpu}</span></div>
+							<div class="cell info" style="flex:1;border-right: 1px solid lightgray;"  data-type="id" ><span class="right">${d.memory}</span></div>
+							<div class="cell info" style="flex:1;border-right: 1px solid lightgray;"  data-type="id" ><span class="right">${d.disk}</span></div>							
+							<div class="cell" style="flex:1;border-right: 1px solid lightgray;"  data-type="action"><p class="right">${d.action}</p></div>
 						</div>`;
 					}
 				},
@@ -1592,14 +1649,21 @@ const componentsData = {
 						source: group,
 						id = false,
 						title,
-						subTitle = ""
+						subTitle = "",
+						icon
 					} = options,
+					
 				 	doms = getGroupTask(group, id),
 					taskOption = {
 						group,
 						id,
-						name: title +" "+ subTitle
+						name:subTitle||title,
+						cpu:"0%",
+						memory:'0 MB',
+						disk:"0 MB/秒",
+						icon:icon
 					};
+					
 				windows.body.insertAdjacentHTML('beforeend', template.taskLine(taskOption));
 			}
 

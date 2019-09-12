@@ -130,66 +130,17 @@
 			"type":"dir",
 			"child":[
 				{
-					"name":"Email",
-					"id":"B7fZo2KXzYdcM251wvalziYGXoBdf3lE",
-					"description":"Click here for my email address!",
-					"icon":"outlook",
-					"type":"alert",
-					"createtime":1503812702,
-					"lastmodify":1503812702,
-					"readonly":false,
-					"onstartmenu":true,
-					"text": "Hello, my mail address is: shadowvzs@hotmail.com"
-				},
-				{
-					"name":"LinkedIn",
-					"id":"pOcvgP2ROz7cOZ3tUNhfheR3dbgFtr7f",
-					"description":"Click here for my LinkedIn",
-					"icon":"linkedin",
+					"name":"what?",
+					"id":"1190FmXHkSWNdiHY96AQkQTscNvxm3PPl2",
+					"description":"Az önéletrajz (pdf)",
+					"icon":"pdf",
 					"type":"url",
 					"createtime":1503812702,
 					"lastmodify":1503812702,
-					"readonly":false,
+					"readonly":true,
 					"onstartmenu":true,
-					"url": "https://www.linkedin.com/in/varga-zsolt-5b4b15149/"
-				},
-				{
-					"name":"Facebook",
-					"id":"1FvUXedLe4qUhIHn54UBK6TRPGMGwJg1",
-					"description":"Click here if you want contact in Facebook",
-					"icon":"facebook",
-					"type":"url",
-					"createtime":1503812702,
-					"lastmodify":1503812702,
-					"readonly":false,
-					"onstartmenu":true,
-					"url": "https://www.facebook.com/shadowvzs"
-
-				},
-				{
-					"name":"Git Hub",
-					"id":"atxc8l5k1ycugWFGgbKVFveWdn5fpIFQ",
-					"description":"Click here if you want check my Git repo",
-					"icon":"git",
-					"type":"url",
-					"createtime":1503812702,
-					"lastmodify":1503812702,
-					"readonly":false,
-					"onstartmenu":true,
-					"url": "https://github.com/shadowvzs"
-				},
-				{
-					"name":"Skype",
-					"id":"QV6iMZTZenxrSx9jcShXAtYK7pCCokjm",
-					"description":"Click here if you want write on Skype",
-					"icon":"skype",
-					"type":"alert",
-					"createtime":1503812702,
-					"lastmodify":1503812702,
-					"readonly":false,
-					"onstartmenu":true,
-					"text": "Hello, my mail address on Skype is: shadowvzs@hotmail.com"
-				}
+					"url":"./assets/file/hh.pdf"
+				}	
 			]
 		},
 
@@ -260,7 +211,7 @@
         {
 			"name":"回收站",
 			"id":"BadBmHrbSujgTAqHEJXy87BtCCzvNXL1",
-			"description":"Guide collection",
+			"description":"this is recycle",
 			"icon":"recycle",
 			"readonly":false,
 			"ondesktop":true,
