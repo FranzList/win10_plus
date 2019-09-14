@@ -1365,18 +1365,22 @@ const componentsData = {
 			function init(list) {
 				taskbar.insertAdjacentHTML('afterbegin', template.startMenu(list))
 				startMenu = taskbar.querySelector('.start-menu')
+				
 				blurable(startMenu, blurCb);
 			}
 
 			function blurCb(ev) {
 				
-				//  startMenu.classList.remove('show');
-				//  startMenu.querySelector('.main-item-list').classList.remove('show');
-				//  if(lis.length){
-				//     for (let index = 0; index < lis.length; index++) {
-				//         lis[index].classList.remove('show')      
-				//     }
-				//  }
+				// if(ev.type=='blur'){
+				// startMenu.classList.remove('show');
+				// startMenu.querySelector('.main-item-list').classList.remove('show');
+				// if(lis.length){
+				// for (let index = 0; index < lis.length; index++) {
+				//       lis[index].classList.remove('show')      
+			    // }
+				//   }
+				// }
+				
 
 			}
 
@@ -1385,7 +1389,7 @@ const componentsData = {
 					init(list)
 				},
 				toggle() {
-
+					
 					startMenu.classList.toggle('show');
 					lis = startMenu.querySelectorAll('li');
 					setTimeout(() => {

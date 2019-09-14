@@ -75,6 +75,18 @@ function VirtualOS() {
     document.body.onclick = globalEvent
     document.body.oncontextmenu = globalEvent
     function globalEvent(ev) {
+        let starbtn=document.querySelector('.startbtn'),
+            startmenu=document.querySelector('.start-menu'),
+            lis=startmenu.querySelectorAll('li');
+        if(ev.target.parentNode!=starbtn){
+           startmenu.classList.remove('show');
+				startmenu.querySelector('.main-item-list').classList.remove('show');
+				if(lis.length){
+				    for (let index = 0; index < lis.length; index++) {
+				      lis[index].classList.remove('show')      
+			        }
+				}
+        }
         
         const e=getActionNode(ev.target,ev.type)
         
@@ -82,7 +94,7 @@ function VirtualOS() {
         //阻止鼠标右键
         
         const action = e.dataset[ev.type]
-
+       
         if (ev.type === 'contextmenu') {
             ev.preventDefault();
         }
@@ -90,8 +102,7 @@ function VirtualOS() {
            
         
         if (action.indexOf(".") > -1) {
-            //创建右键菜单。。。
-           
+            //创建右键菜单。。。          
             callComponent(e,action,ev)
         }
 
